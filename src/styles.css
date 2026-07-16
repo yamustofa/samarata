@@ -3,6 +3,7 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/manrope";
 @import "@fontsource-variable/geist-mono";
+@import "@fontsource/ibm-plex-mono/latin-600.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -154,6 +155,49 @@ button,
   background-size: auto, 24px 24px;
 }
 
+.headline-highlight {
+  position: relative;
+  isolation: isolate;
+  white-space: nowrap;
+}
+
+.headline-highlight::after {
+  position: absolute;
+  right: -0.03em;
+  bottom: 0.1em;
+  left: -0.02em;
+  z-index: -1;
+  height: 0.3em;
+  transform: rotate(-1.2deg) skewX(-7deg);
+  border-radius: 0.04em;
+  background: color-mix(in oklab, var(--primary) 72%, #baff45);
+  clip-path: polygon(1% 12%, 99% 0, 100% 82%, 2% 100%, 0 44%);
+  content: "";
+  opacity: 0.9;
+}
+
+.headline-circle {
+  position: relative;
+  isolation: isolate;
+  display: inline-block;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.055em;
+  white-space: nowrap;
+}
+
+.headline-circle::before {
+  position: absolute;
+  inset: -0.03em -0.08em 0.02em -0.07em;
+  z-index: -1;
+  transform: translateY(0.05em) rotate(-3deg);
+  border: 0.035em solid color-mix(in oklab, var(--primary) 78%, #8cff3f);
+  border-radius: 52% 47% 51% 46%;
+  content: "";
+  pointer-events: none;
+}
+
 .motion-card {
   transition-property: transform, box-shadow;
   transition-duration: 200ms;
@@ -200,7 +244,8 @@ button,
     linear-gradient(#000 0 0) center / 100% calc(100% - 14px) no-repeat,
     conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / 10px 7px repeat-x,
     conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 10px 7px repeat-x;
-  font-family: 'Geist Mono Variable', monospace;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600;
   filter: drop-shadow(0 2px 1px rgb(0 0 0 / 0.08)) drop-shadow(0 18px 16px rgb(0 0 0 / 0.16));
   padding-block: 24px;
 }
@@ -210,34 +255,203 @@ button,
 }
 
 .landing-receipt {
-  padding-top: 88px;
+  padding-top: 34px;
 }
 
-.printer-slot {
-  clip-path: inset(34% 12% 40% 12%);
+.printer-stage {
+  padding-top: 112px;
 }
 
-.printer-shell {
-  clip-path: inset(0 0 57% 0);
+.printer-machine {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 112%;
+  height: 150px;
+  transform: translateX(-50%);
+  border: 1px solid rgb(92 88 75 / 0.34);
+  border-radius: 22px 22px 25px 25px;
+  background:
+    linear-gradient(90deg, rgb(255 255 255 / 0.44), transparent 8% 90%, rgb(93 87 72 / 0.12)),
+    linear-gradient(180deg, #f8f5e9 0%, #eeeadd 68%, #d9d5c8 100%);
+  box-shadow:
+    0 2px 0 rgb(255 255 255 / 0.9) inset,
+    0 0 0 5px rgb(255 255 255 / 0.25) inset,
+    0 18px 24px -16px rgb(25 25 20 / 0.38),
+    0 28px 46px -24px rgb(35 34 29 / 0.28);
+}
+
+.printer-highlight {
+  position: absolute;
+  inset: 7px 8px auto;
+  height: 34px;
+  border-radius: 16px 16px 45% 45%;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.7), transparent);
+  opacity: 0.75;
+}
+
+.printer-light {
+  position: absolute;
+  top: 24px;
+  right: 27px;
+  z-index: 3;
+  width: 22px;
+  height: 22px;
+  border: 2px solid #71140f;
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 30%, #fff 0 6%, #ff6b53 8%, #ef2415 35%, #a60e08 70%);
+  box-shadow:
+    0 0 0 3px rgb(255 255 255 / 0.65),
+    0 1px 2px rgb(0 0 0 / 0.6) inset,
+    0 0 9px rgb(239 36 21 / 0.45);
+  animation: printer-light-cycle 6400ms linear infinite;
+  will-change: transform, filter;
+}
+
+.printer-bezel {
+  position: absolute;
+  top: 61px;
+  right: 9%;
+  bottom: 20px;
+  left: 9%;
+  border: 1px solid rgb(57 56 49 / 0.5);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #f7f4e8, #cbc7ba);
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.85) inset,
+    0 2px 3px rgb(0 0 0 / 0.2) inset;
+}
+
+.printer-opening {
+  position: absolute;
+  inset: 11px 4% 10px;
+  overflow: hidden;
+  border: 4px solid #22231f;
+  border-radius: 5px 5px 9px 9px;
+  background: linear-gradient(180deg, #050606 0 45%, #171918 72%, #30312f 100%);
+  box-shadow:
+    0 4px 8px rgb(0 0 0 / 0.9) inset,
+    0 1px 0 rgb(255 255 255 / 0.35);
+}
+
+.printer-opening::after {
+  position: absolute;
+  inset: 8px 10% auto;
+  height: 18px;
+  border-radius: 0 0 50% 50%;
+  background: linear-gradient(180deg, #080909, #2c2e2d);
+  box-shadow: 0 9px 12px rgb(0 0 0 / 0.7);
+  content: "";
+}
+
+.printer-mouth {
+  position: absolute;
+  top: 92px;
+  right: 13%;
+  left: 13%;
+  z-index: 20;
+  height: 43px;
+  transform: perspective(140px) rotateX(-8deg);
+  transform-origin: top;
+  border: 1px solid #090a0a;
+  border-radius: 3px 3px 50% 50% / 3px 3px 22px 22px;
+  background:
+    linear-gradient(100deg, rgb(255 255 255 / 0.08), transparent 18% 82%, rgb(255 255 255 / 0.1)),
+    linear-gradient(180deg, #090a0a 0%, #1a1c1c 65%, #080909 100%);
+  box-shadow:
+    0 -2px 6px rgb(0 0 0 / 0.85),
+    0 9px 9px -5px rgb(0 0 0 / 0.75);
+}
+
+.printer-mouth::before,
+.printer-mouth::after {
+  position: absolute;
+  top: 3px;
+  width: 13px;
+  height: 31px;
+  background: linear-gradient(90deg, #303332, #090a0a);
+  content: "";
+}
+
+.printer-mouth::before {
+  left: 5px;
+  transform: skewY(-32deg);
+}
+
+.printer-mouth::after {
+  right: 5px;
+  transform: scaleX(-1) skewY(-32deg);
+}
+
+.printer-mouth-shine {
+  position: absolute;
+  right: 10%;
+  bottom: 5px;
+  left: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.7), transparent);
+}
+
+.printer-paper-wrap {
+  min-height: 28rem;
 }
 
 .paper-feed {
   --paper-reveal: 100%;
-  -webkit-mask:
-    linear-gradient(#000 0 0) top / 100% calc(var(--paper-reveal) - 7px) no-repeat,
-    conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg)
-      left calc(var(--paper-reveal) - 7px) / 10px 7px repeat-x;
-  mask:
-    linear-gradient(#000 0 0) top / 100% calc(var(--paper-reveal) - 7px) no-repeat,
-    conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg)
-      left calc(var(--paper-reveal) - 7px) / 10px 7px repeat-x;
-  animation: paper-feed 2100ms cubic-bezier(0.2, 0, 0, 1) 250ms both;
-  will-change: mask-position, mask-size;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(var(--paper-reveal) - 5px),
+    97.5% var(--paper-reveal),
+    95% calc(var(--paper-reveal) - 5px),
+    92.5% var(--paper-reveal),
+    90% calc(var(--paper-reveal) - 5px),
+    87.5% var(--paper-reveal),
+    85% calc(var(--paper-reveal) - 5px),
+    82.5% var(--paper-reveal),
+    80% calc(var(--paper-reveal) - 5px),
+    77.5% var(--paper-reveal),
+    75% calc(var(--paper-reveal) - 5px),
+    72.5% var(--paper-reveal),
+    70% calc(var(--paper-reveal) - 5px),
+    67.5% var(--paper-reveal),
+    65% calc(var(--paper-reveal) - 5px),
+    62.5% var(--paper-reveal),
+    60% calc(var(--paper-reveal) - 5px),
+    57.5% var(--paper-reveal),
+    55% calc(var(--paper-reveal) - 5px),
+    52.5% var(--paper-reveal),
+    50% calc(var(--paper-reveal) - 5px),
+    47.5% var(--paper-reveal),
+    45% calc(var(--paper-reveal) - 5px),
+    42.5% var(--paper-reveal),
+    40% calc(var(--paper-reveal) - 5px),
+    37.5% var(--paper-reveal),
+    35% calc(var(--paper-reveal) - 5px),
+    32.5% var(--paper-reveal),
+    30% calc(var(--paper-reveal) - 5px),
+    27.5% var(--paper-reveal),
+    25% calc(var(--paper-reveal) - 5px),
+    22.5% var(--paper-reveal),
+    20% calc(var(--paper-reveal) - 5px),
+    17.5% var(--paper-reveal),
+    15% calc(var(--paper-reveal) - 5px),
+    12.5% var(--paper-reveal),
+    10% calc(var(--paper-reveal) - 5px),
+    7.5% var(--paper-reveal),
+    5% calc(var(--paper-reveal) - 5px),
+    2.5% var(--paper-reveal),
+    0 calc(var(--paper-reveal) - 5px)
+  );
+  animation: paper-cycle 6400ms linear infinite;
+  transform-origin: 50% 8%;
+  will-change: transform, clip-path;
 }
 
 .paper-feed .landing-receipt {
   -webkit-mask: none;
   mask: none;
+  animation: receipt-top-tear 6400ms step-end infinite;
 }
 
 .paper-feed::after {
@@ -259,54 +473,137 @@ button,
   initial-value: 100%;
 }
 
-@keyframes paper-feed {
+@keyframes paper-cycle {
   0% {
-    --paper-reveal: 12%;
+    --paper-reveal: 3%;
+    transform: translate3d(0, 0, 0) rotate(0deg);
   }
-  32% {
+  4.7% {
+    --paper-reveal: 3%;
+    animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+  }
+  15.2% {
     --paper-reveal: 42%;
   }
-  39% {
+  17.7% {
     --paper-reveal: 42%;
+    animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
   }
-  65% {
+  26.7% {
     --paper-reveal: 72%;
   }
-  71% {
+  28.7% {
     --paper-reveal: 72%;
+    animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
   }
+  37.5%,
+  84.375% {
+    --paper-reveal: 100%;
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  96.875%,
   100% {
     --paper-reveal: 100%;
+    transform: translate3d(7%, calc(100% + 5rem), 0) rotate(5deg);
+  }
+}
+
+@keyframes receipt-top-tear {
+  0%,
+  84.374% {
+    clip-path: inset(0);
+  }
+  84.375%,
+  100% {
+    clip-path: polygon(
+      0 5px,
+      2.5% 0,
+      5% 5px,
+      7.5% 0,
+      10% 5px,
+      12.5% 0,
+      15% 5px,
+      17.5% 0,
+      20% 5px,
+      22.5% 0,
+      25% 5px,
+      27.5% 0,
+      30% 5px,
+      32.5% 0,
+      35% 5px,
+      37.5% 0,
+      40% 5px,
+      42.5% 0,
+      45% 5px,
+      47.5% 0,
+      50% 5px,
+      52.5% 0,
+      55% 5px,
+      57.5% 0,
+      60% 5px,
+      62.5% 0,
+      65% 5px,
+      67.5% 0,
+      70% 5px,
+      72.5% 0,
+      75% 5px,
+      77.5% 0,
+      80% 5px,
+      82.5% 0,
+      85% 5px,
+      87.5% 0,
+      90% 5px,
+      92.5% 0,
+      95% 5px,
+      97.5% 0,
+      100% 5px,
+      100% 100%,
+      0 100%
+    );
+  }
+}
+
+@keyframes printer-light-cycle {
+  0%, 8%, 16%, 24%, 32%, 37.5%, 100% {
+    transform: scale(0.88);
+    filter: brightness(0.55) saturate(0.8);
+    box-shadow:
+      0 0 0 3px rgb(255 255 255 / 0.65),
+      0 1px 2px rgb(0 0 0 / 0.6) inset,
+      0 0 4px rgb(239 36 21 / 0.2);
+  }
+  4%, 12%, 20%, 28%, 35% {
+    transform: scale(1.08);
+    filter: brightness(1.35) saturate(1.2);
+    box-shadow:
+      0 0 0 3px rgb(255 255 255 / 0.65),
+      0 1px 2px rgb(0 0 0 / 0.6) inset,
+      0 0 16px 3px rgb(239 36 21 / 0.65);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .paper-feed {
+  .paper-feed,
+  .paper-feed .landing-receipt,
+  .printer-light {
     animation: none;
   }
 }
 
-@media (min-width: 64rem) {
-  .landing-receipt {
-    padding-top: 48px;
-  }
-}
-
-.receipt-panel::after {
-  position: absolute;
-  top: 38%;
-  right: -1px;
-  width: 20px;
-  height: 30px;
-  background: var(--background);
-  clip-path: polygon(100% 0, 100% 100%, 38% 82%, 72% 58%, 24% 34%, 64% 15%);
-  content: "";
-}
-
 .receipt-panel [data-slot="card-title"] {
-  font-family: 'Geist Mono Variable', monospace;
+  font-family: 'IBM Plex Mono', monospace;
   letter-spacing: -0.02em;
   text-transform: uppercase;
+}
+
+.receipt-panel .font-mono {
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.receipt-panel .font-medium,
+.receipt-panel .font-semibold,
+.receipt-panel .font-bold {
+  font-weight: 600;
 }
 
 .receipt-panel [data-slot="separator"] {

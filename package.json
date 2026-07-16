@@ -22,6 +22,7 @@
     "@cloudflare/vite-plugin": "^1.26.0",
     "@fontsource-variable/geist-mono": "^5.2.8",
     "@fontsource-variable/manrope": "^5.2.8",
+    "@fontsource/ibm-plex-mono": "^5.2.7",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-devtools": "latest",
     "@tanstack/react-router": "latest",

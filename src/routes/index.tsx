@@ -1,3 +1,4 @@
+import ibmPlexMonoFontUrl from "@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-600-normal.woff2?url";
 import { createFileRoute } from "@tanstack/react-router";
 import {
 	ArrowLeft,
@@ -29,8 +30,6 @@ import {
 	useSpring,
 } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import printerImage from "@/assets/printer.png";
-
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -107,8 +106,8 @@ const copy = {
 	id: {
 		start: "Mulai hitung",
 		navTagline: "Bagi diskon dengan adil.",
-		eyebrow: "Lagi pesen atau belanja bareng?",
-		title: "Diskonnya bareng. Bayarnya tetap adil.",
+		eyebrow: "Bagi diskon sesuai porsi tagihan",
+		title: "Hemat untuk semua. Bayar sesuai porsinya.",
 		subtitle:
 			"Masukkan tagihan, diskon, dan biaya lainnya. PRORATA langsung hitung berapa yang harus dibayar masing-masing.",
 		benefits: [
@@ -130,7 +129,7 @@ const copy = {
 			"Masukkan harga makanan masing-masing sebelum diskon dan biaya.",
 		participant: "Peserta",
 		name: "Nama",
-		namePlaceholder: "Contoh: Habib",
+		namePlaceholder: "Contoh: Budi",
 		bill: "Tagihan awal",
 		add: "Tambah peserta",
 		remove: "Hapus peserta",
@@ -172,8 +171,8 @@ const copy = {
 	en: {
 		start: "Calculate the split",
 		navTagline: "Split discounts fairly.",
-		eyebrow: "Ordering or shopping together?",
-		title: "Shared discount. Fair payment.",
+		eyebrow: "Split discounts based on each bill’s share",
+		title: "Savings for everyone. Pay your fair share.",
 		subtitle:
 			"Enter the bills, discounts, and additional fees. PRORATA calculates everyone’s fair share.",
 		benefits: [
@@ -263,6 +262,25 @@ function escapeXml(value: string) {
 				'"': "&quot;",
 			})[character] ?? character,
 	);
+}
+
+let ibmPlexMonoFontDataUrl: Promise<string> | undefined;
+
+function getIbmPlexMonoFontDataUrl() {
+	if (!ibmPlexMonoFontDataUrl) {
+		ibmPlexMonoFontDataUrl = fetch(ibmPlexMonoFontUrl)
+			.then((response) => {
+				if (!response.ok) throw new Error("Unable to load receipt font");
+				return response.arrayBuffer();
+			})
+			.then((buffer) => {
+				const bytes = new Uint8Array(buffer);
+				let binary = "";
+				for (const byte of bytes) binary += String.fromCharCode(byte);
+				return `data:font/woff2;base64,${btoa(binary)}`;
+			});
+	}
+	return ibmPlexMonoFontDataUrl;
 }
 
 function Home() {
@@ -369,7 +387,7 @@ function Home() {
 	function receiptText() {
 		const splitLabel =
 			locale === "id"
-				? `${result.participants.length} orang · pembagian adil`
+				? `${result.participants.length} orang · sama rata, sama rasa`
 				: `${result.participants.length} people · fair split`;
 		return [
 			orderName.trim() || "PRORATA",
@@ -390,30 +408,47 @@ function Home() {
 	}
 
 	async function receiptBlob() {
+		const embeddedReceiptFont = await getIbmPlexMonoFontDataUrl();
+		const generatedAt = new Date();
+		const dateLocale = locale === "id" ? "id-ID" : "en-US";
+		const generatedDate = new Intl.DateTimeFormat(dateLocale, {
+			day: "2-digit",
+			month: "short",
+			year: "numeric",
+		}).format(generatedAt);
+		const generatedTime = new Intl.DateTimeFormat(dateLocale, {
+			hour: "2-digit",
+			minute: "2-digit",
+			second: "2-digit",
+			timeZoneName: "short",
+		}).format(generatedAt);
 		const width = 720;
 		const height = 390 + result.participants.length * 68;
+		const paperEdgeSegments = 134;
+		const paperEdgeStep = 672 / paperEdgeSegments;
 		const splitLabel =
 			locale === "id"
-				? `${result.participants.length} orang · pembagian adil`
+				? `${result.participants.length} orang · sama rata, sama rasa`
 				: `${result.participants.length} people · fair split`;
 		const edgePoints = Array.from(
-			{ length: 41 },
-			(_, index) => `${24 + index * 16.8},${index % 2 === 0 ? 32 : 24}`,
+			{ length: paperEdgeSegments + 1 },
+			(_, index) =>
+				`${24 + index * paperEdgeStep},${index % 2 === 0 ? 32 : 24}`,
 		);
 		const bottomEdgePoints = Array.from(
-			{ length: 41 },
+			{ length: paperEdgeSegments + 1 },
 			(_, index) =>
-				`${696 - index * 16.8},${index % 2 === 0 ? height - 32 : height - 24}`,
+				`${696 - index * paperEdgeStep},${index % 2 === 0 ? height - 32 : height - 24}`,
 		);
 		const paperPoints = [...edgePoints, ...bottomEdgePoints].join(" ");
 		const rows = result.participants
 			.map(
 				(person, index) =>
-					`<text x="64" y="${220 + index * 68}" font-family="monospace" font-size="18" fill="#766f61">${String(index + 1).padStart(2, "0")}</text><text x="108" y="${220 + index * 68}" font-family="monospace" font-size="22" fill="#25241f">${escapeXml(person.name.toUpperCase())}</text><text x="656" y="${220 + index * 68}" text-anchor="end" font-family="monospace" font-size="22" font-weight="700" fill="#25241f">${escapeXml(formatter.format(person.final))}</text>`,
+					`<text x="64" y="${220 + index * 68}" font-size="18" fill="#766f61">${String(index + 1).padStart(2, "0")}</text><text x="108" y="${220 + index * 68}" font-size="22" fill="#25241f">${escapeXml(person.name.toUpperCase())}</text><text x="656" y="${220 + index * 68}" text-anchor="end" font-size="22" fill="#25241f">${escapeXml(formatter.format(person.final))}</text>`,
 			)
 			.join("");
 		const totalLineY = 250 + result.participants.length * 68;
-		const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><defs><filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#000" flood-opacity=".16"/></filter></defs><polygon points="${paperPoints}" fill="#fbf2d5" stroke="#d7cba9" filter="url(#shadow)"/><rect x="56" y="68" width="44" height="44" rx="5" fill="#25241f"/><text x="78" y="97" text-anchor="middle" font-family="monospace" font-size="15" font-weight="700" fill="#fbf2d5">P/</text><text x="120" y="82" font-family="monospace" font-size="27" font-weight="700" fill="#25241f">${escapeXml((orderName.trim() || "PRORATA").toUpperCase())}</text><text x="120" y="108" font-family="monospace" font-size="16" fill="#766f61">${escapeXml(splitLabel)}</text><text x="656" y="92" text-anchor="end" font-family="monospace" font-size="15" fill="#766f61">#0001</text><line x1="56" x2="664" y1="152" y2="152" stroke="#8f8879" stroke-opacity=".55" stroke-dasharray="7 7"/>${rows}<line x1="56" x2="664" y1="${totalLineY}" y2="${totalLineY}" stroke="#8f8879" stroke-opacity=".55" stroke-dasharray="7 7"/><text x="56" y="${totalLineY + 48}" font-family="monospace" font-size="18" fill="#766f61">${escapeXml(t.totalPayment)}</text><text x="664" y="${totalLineY + 48}" text-anchor="end" font-family="monospace" font-size="28" font-weight="700" fill="#25241f">${escapeXml(formatter.format(result.total))}</text><text x="360" y="${height - 60}" text-anchor="middle" font-family="monospace" font-size="15" fill="#766f61">${escapeXml(t.generated)}</text></svg>`;
+		const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><defs><style>@font-face{font-family:IBMPlexMono;src:url('${embeddedReceiptFont}') format('woff2');font-weight:600}text{font-family:IBMPlexMono,monospace;font-weight:600}</style><filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#000" flood-opacity=".16"/></filter></defs><polygon points="${paperPoints}" fill="#fbf2d5" stroke="#d7cba9" filter="url(#shadow)"/><rect x="56" y="68" width="44" height="44" rx="5" fill="#25241f"/><text x="78" y="97" text-anchor="middle" font-size="15" fill="#fbf2d5">P/</text><text x="120" y="82" font-size="27" fill="#25241f">${escapeXml((orderName.trim() || "PRORATA").toUpperCase())}</text><text x="120" y="108" font-size="16" fill="#766f61">${escapeXml(splitLabel)}</text><text x="656" y="74" text-anchor="end" font-size="14" fill="#766f61">#0001</text><text x="656" y="94" text-anchor="end" font-size="13" fill="#766f61">${escapeXml(generatedDate)}</text><text x="656" y="114" text-anchor="end" font-size="13" fill="#766f61">${escapeXml(generatedTime)}</text><line x1="56" x2="664" y1="152" y2="152" stroke="#8f8879" stroke-opacity=".55" stroke-dasharray="7 7"/>${rows}<line x1="56" x2="664" y1="${totalLineY}" y2="${totalLineY}" stroke="#8f8879" stroke-opacity=".55" stroke-dasharray="7 7"/><text x="56" y="${totalLineY + 48}" font-size="18" fill="#766f61">${escapeXml(t.totalPayment)}</text><text x="664" y="${totalLineY + 48}" text-anchor="end" font-size="28" fill="#25241f">${escapeXml(formatter.format(result.total))}</text><text x="360" y="${height - 60}" text-anchor="middle" font-size="15" fill="#766f61">${escapeXml(t.generated)}</text></svg>`;
 		const image = new Image();
 		const url = URL.createObjectURL(
 			new Blob([svg], { type: "image/svg+xml;charset=utf-8" }),
@@ -648,7 +683,15 @@ function Home() {
 												ease: [0.23, 1, 0.32, 1],
 											}}
 										>
-											{t.title}
+											{locale === "id" ? (
+												<>
+													<span className="headline-highlight">Hemat</span>
+													{" untuk semua. Bayar sesuai "}
+													<span className="headline-circle">porsinya</span>.
+												</>
+											) : (
+												t.title
+											)}
 										</motion.h1>
 										<motion.p
 											animate={{ opacity: 1, transform: "translateY(0px)" }}
@@ -1006,7 +1049,7 @@ function Home() {
 															<CardTitle>{orderName || "PRORATA"}</CardTitle>
 															<CardDescription>
 																{locale === "id"
-																	? `${result.participants.length} orang · pembagian adil`
+																	? `${result.participants.length} orang · sama rata, sama rasa`
 																	: `${result.participants.length} people · fair split`}
 															</CardDescription>
 														</div>
@@ -1322,38 +1365,35 @@ function HeroReceipt({
 	);
 	const amounts =
 		currency === "IDR" ? [16825, 21032, 15143] : [1683, 2103, 1514];
+	const sample =
+		locale === "id"
+			? {
+					title: "Ayam Geprek",
+					description: "3 orang · sama rata",
+					names: ["Budi", "Siti", "Andi"],
+				}
+			: {
+					title: "Friday Pizza",
+					description: "3 people · fair split",
+					names: ["Alex", "Sam", "Jamie"],
+				};
 	return (
 		<div
 			aria-hidden="true"
-			className="mx-auto w-full max-w-88 lg:max-w-md lg:border-l lg:border-border lg:pl-12"
+			className="mx-auto w-full max-w-88 lg:max-w-md lg:pl-12"
 		>
-			<div className="relative isolate pt-14 sm:pt-16">
-				<img
-					alt=""
-					className="pointer-events-none absolute -top-16 left-1/2 z-0 w-[152%] max-w-none -translate-x-1/2 select-none sm:-top-20"
-					draggable={false}
-					height={480}
-					src={printerImage}
-					width={720}
-				/>
-
-				<img
-					alt=""
-					className="printer-slot pointer-events-none absolute -top-16 left-1/2 z-20 w-[152%] max-w-none -translate-x-1/2 select-none sm:-top-20"
-					draggable={false}
-					height={480}
-					src={printerImage}
-					width={720}
-				/>
-				<img
-					alt=""
-					className="printer-shell pointer-events-none absolute -top-16 left-1/2 z-20 w-[152%] max-w-none -translate-x-1/2 select-none sm:-top-20"
-					draggable={false}
-					height={480}
-					src={printerImage}
-					width={720}
-				/>
-				<div className="relative z-10 overflow-hidden pb-9">
+			<div className="printer-stage relative isolate">
+				<div className="printer-machine" role="presentation">
+					<div className="printer-highlight" />
+					<div className="printer-light" />
+					<div className="printer-bezel">
+						<div className="printer-opening" />
+					</div>
+					<div className="printer-mouth">
+						<div className="printer-mouth-shine" />
+					</div>
+				</div>
+				<div className="printer-paper-wrap relative z-10 overflow-hidden pb-9">
 					<div className="paper-feed relative mx-auto w-[76%]">
 						<Card className="landing-receipt receipt-panel">
 							<CardHeader>
@@ -1362,8 +1402,8 @@ function HeroReceipt({
 										P/
 									</span>
 									<div>
-										<CardTitle className="text-base">Friday Pizza</CardTitle>
-										<CardDescription>3 people · fair split</CardDescription>
+										<CardTitle className="text-base">{sample.title}</CardTitle>
+										<CardDescription>{sample.description}</CardDescription>
 									</div>
 								</div>
 								<CardAction>
@@ -1375,7 +1415,7 @@ function HeroReceipt({
 							<CardContent>
 								<Separator className="mb-5" />
 								<div className="flex flex-col gap-5">
-									{["Habib", "Danny", "April"].map((name, index) => (
+									{sample.names.map((name, index) => (
 										<div
 											className="flex items-center justify-between"
 											key={name}
