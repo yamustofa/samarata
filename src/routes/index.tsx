@@ -1456,14 +1456,19 @@ function HeroReceipt({
 					names: ["Alex", "Sam", "Jamie"],
 				};
 	return (
-		<div
-			aria-hidden="true"
-			className="mx-auto w-full max-w-88 lg:max-w-md lg:pl-12"
-		>
+		<div aria-hidden="true" className="mx-auto w-full max-w-88">
 			<div className="printer-stage relative isolate">
 				<div className="printer-machine" role="presentation">
 					<div className="printer-highlight" />
-					<div className="printer-light" />
+					<div className="printer-roll-cover" />
+					<div className="printer-label">
+						<strong>PRORATA</strong>
+						<span>THERMAL 01</span>
+					</div>
+					<div className="printer-controls">
+						<div className="printer-light" />
+						<div className="printer-feed-button" />
+					</div>
 					<div className="printer-bezel">
 						<div className="printer-opening" />
 					</div>
