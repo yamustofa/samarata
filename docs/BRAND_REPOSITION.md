@@ -1,4 +1,4 @@
-# Prorata Brand Positioning
+# samarata Brand Positioning
 
 > **Split discounts fairly.**
 
@@ -8,7 +8,7 @@
 
 Become the simplest and most trusted calculator for fairly distributing discounts, vouchers, cashback, and additional fees across any shared purchase.
 
-Whether it's ordering food, buying groceries together, or sharing a group purchase, Prorata ensures everyone pays their fair share.
+Whether it's ordering food, buying groceries together, or sharing a group purchase, samarata ensures everyone pays their fair share.
 
 ---
 
@@ -40,15 +40,15 @@ The answer usually involves:
 - arguments
 - rounding mistakes
 
-Prorata eliminates that entire process.
+samarata eliminates that entire process.
 
 ---
 
 # Positioning Statement
 
-**Prorata is a proportional discount calculator that helps groups fairly distribute discounts, vouchers, cashback, and additional fees across shared purchases.**
+**samarata is a proportional discount calculator that helps groups fairly distribute discounts, vouchers, cashback, and additional fees across shared purchases.**
 
-Unlike traditional split bill apps that focus on tracking debts or splitting expenses equally, Prorata specializes in fair proportional allocation.
+Unlike traditional split bill apps that focus on tracking debts or splitting expenses equally, samarata specializes in fair proportional allocation.
 
 ---
 
@@ -85,9 +85,9 @@ No less.
 
 # Elevator Pitch
 
-Prorata calculates how much everyone should pay after discounts and extra fees.
+samarata calculates how much everyone should pay after discounts and extra fees.
 
-Simply enter the original bills, total discount, and service fee, and Prorata instantly distributes everything proportionally—making every split transparent and fair.
+Simply enter the original bills, total discount, and service fee, and samarata instantly distributes everything proportionally—making every split transparent and fair.
 
 ---
 
@@ -232,7 +232,7 @@ Users understand the problem immediately.
 
 ## Hero
 
-# Prorata
+# samarata
 
 Split discounts fairly.
 
@@ -278,13 +278,13 @@ Apply vouchers and extra fees fairly.
 
 ---
 
-# Why Prorata?
+# Why samarata?
 
 Traditional split bill apps answer:
 
 > How much does everyone owe?
 
-Prorata answers:
+samarata answers:
 
 > How should a shared discount be distributed fairly?
 
@@ -336,4 +336,4 @@ Tomorrow
 
 The easiest calculator for any shared purchase involving discounts, vouchers, cashback, taxes, service fees, or other proportional adjustments.
 
-Prorata grows beyond food without changing its identity because fairness—not food—is the core of the brand.
+samarata grows beyond food without changing its identity because fairness—not food—is the core of the brand.

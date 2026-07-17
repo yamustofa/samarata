@@ -1,11 +1,12 @@
 {
-  "short_name": "PRORATA",
-  "name": "PRORATA — Split Discounts Fairly",
+  "short_name": "samarata",
+  "name": "samarata — Bagi Diskon dengan Adil",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "src": "logo.png",
+      "sizes": "800x800",
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "logo192.png",
@@ -22,5 +23,5 @@
   "display": "standalone",
   "theme_color": "#24924f",
   "background_color": "#ffffff",
-  "description": "Calculate fair proportional payments after discounts, vouchers, cashback, and additional fees."
+  "description": "Bagi diskon, voucher, cashback, dan biaya tambahan secara adil dan proporsional."
 }

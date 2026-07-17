@@ -1,117 +1,119 @@
-<div align=center>
+<div align="center">
 
-# PRORATA
+**Bahasa Indonesia** · [English](README.en.md)
 
-### Split discounts fairly.
+# samarata
 
-The fast, transparent way to calculate what everyone should pay after discounts, vouchers, cashback, delivery fees, and other shared costs.
+### Bagi diskon dengan adil.
 
-**[Try PRORATA live](https://prorata.yamustofa.workers.dev/)**
+Cara gampang dan transparan buat menghitung berapa yang harus dibayar masing-masing setelah diskon, voucher, cashback, ongkir, dan biaya lainnya.
+
+**[Coba samarata](https://samarata.yamustofa.workers.dev/)**
 
 </div>
 
-[![PRORATA — Split discounts fairly](public/og-prorata.png)](https://prorata.yamustofa.workers.dev/)
+[![samarata — Bagi diskon dengan adil](public/og-samarata.png)](https://samarata.yamustofa.workers.dev/)
 
-## The fair answer to “So… how much do I pay?”
+## Biar ada jawaban kalo ditanya, “Jadi… aku bayar berapa?”
 
-A group order looks simple until the voucher arrives. Splitting the final total equally is rarely fair, while doing the math by hand means calculators, spreadsheets, rounding errors, and a receipt nobody wants to explain.
+Pesan rame-rame dapet diskonan rame-rame. Kalau total akhirnya langsung dibagi rata, hasilnya belum tentu adil. Kalau dihitung manual, ujung-ujungnya buka kalkulator, bikin spreadsheet, ketemu selisih pembulatan, lalu bingung menjelaskan hasilnya ke grup.
 
-PRORATA handles the awkward part. Add each person's original bill, the total discount, and any extra fees. In seconds, everyone gets a proportional share of the net adjustment and a clear final amount to pay.
+Di sinilah samarata bantu. Tinggal masukkan tagihan awal tiap orang, total diskon, dan biaya tambahan. Beberapa detik kemudian, langsung kelihatan berapa bagian yang adil dan berapa yang perlu dibayar masing-masing.
 
-It is built for the moments that happen every day:
+samarata bisa dipakai buat banyak hal sehari-hari:
 
-- 🍕 **Food delivery** — divide GoFood, GrabFood, or ShopeeFood promos by each person's order
-- 🛒 **Group shopping** — share discounts and cashback without favoring the biggest or smallest item
-- 🎁 **Shared purchases** — settle gifts, groceries, subscriptions, and event expenses clearly
-- 🚕 **Shared rides** — distribute vouchers and additional charges by each rider's portion
+- 🍕 **Pesan makanan** — bagi promo GoFood, GrabFood, atau ShopeeFood sesuai harga pesanan masing-masing
+- 🛒 **Belanja bareng** — bagi diskon dan cashback tanpa bikin satu orang untung sendiri
+- 🎁 **Patungan** — bereskan pembayaran hadiah, belanja bulanan, langganan, atau kebutuhan acara
+- 🚕 **Naik kendaraan bareng** — bagi voucher dan biaya tambahan sesuai porsi tiap penumpang
 
-## Fair by design. Simple by default.
+## Adil hitungannya. Gampang dipakainya.
 
-**Proportional, not merely equal.** Someone responsible for 40% of the original bill receives 40% of the net adjustment—the discount after shared fees are deducted.
+**Proporsional, bukan asal dibagi rata.** Kalau tagihan awal seseorang adalah 40% dari total, ia juga mendapat 40% dari penyesuaian bersih—diskon setelah dikurangi biaya bersama.
 
-**Ready in under a minute.** The focused, guided flow takes you from order totals to participant bills and a complete result—without accounts, spreadsheets, or setup.
+**Nggak sampai semenit.** Mulai dari isi total pesanan sampai hasil pembagian, semuanya bisa selesai tanpa bikin akun, buka spreadsheet, atau ribet atur ini-itu.
 
-**Easy to trust.** PRORATA shows the original subtotal, discount, fees, individual adjustments, and final payments so the numbers never feel like a black box.
+**Hitungannya kelihatan jelas.** Subtotal, diskon, biaya, penyesuaian tiap orang, dan pembayaran akhir semuanya ditampilkan—jadi nggak ada angka misterius.
 
-**Made to share.** Turn the result into a polished receipt, save it as a high-resolution PNG, copy it as text, or send it through your device's native share menu.
+**Tinggal bagikan.** Hasilnya bisa dijadikan struk, disimpan sebagai PNG, disalin sebagai teks, atau langsung dikirim lewat menu share di perangkatmu.
 
-## One shared order. Three quick steps.
+## Cuma tiga langkah
 
-1. **Enter the order** — add an optional name, total discount, and delivery or service fees.
-2. **Add everyone** — enter each participant and their original bill before adjustments.
-3. **Share the result** — review the reconciled split and send the receipt to the group.
+1. **Isi detail pesanan** — tambahkan nama kalau perlu, lalu masukkan total diskon, ongkir, dan biaya layanan.
+2. **Masukkan yang ikut** — isi nama dan tagihan awal masing-masing sebelum diskon.
+3. **Cek lalu bagikan** — pastikan hasilnya sudah oke, lalu kirim struknya ke grup.
 
-PRORATA works in Bahasa Indonesia and English, supports IDR and USD, adapts from phone to desktop, and includes light and dark themes. Reduced-motion preferences are respected throughout the experience.
+samarata tersedia dalam Bahasa Indonesia dan Inggris, mendukung IDR dan USD, enak dipakai dari HP sampai desktop, dan punya tema terang maupun gelap. Kalau perangkatmu mengurangi animasi, samarata juga akan ikut menyesuaikan.
 
-> **Everyone pays their fair share. No more. No less.**
+> **Semua bayar sesuai porsinya. Nggak lebih, nggak kurang.**
 
-## How the calculation stays exact
+## Biar hitungannya tetap pas
 
-Each participant's original bill becomes their allocation weight:
-
-```text
-weight           = individual bill / subtotal
-net adjustment   = total discount - total fees
-adjustment share = net adjustment × weight
-final payment    = individual bill - adjustment share
-```
-
-Money is stored as integer units—whole rupiah for IDR and cents for USD. Fractional allocations are reconciled with the largest-remainder method and a deterministic tie-breaker, guaranteeing that every participant amount adds back to the exact order total:
+Tagihan awal tiap orang dipakai sebagai bobot pembagian:
 
 ```text
-sum(final payments) = subtotal - discount + fees
+bobot              = tagihan individu / subtotal
+penyesuaian bersih = total diskon - total biaya
+bagian penyesuaian = penyesuaian bersih × bobot
+pembayaran akhir   = tagihan individu - bagian penyesuaian
 ```
 
-To prevent negative final payments, the discount must not exceed the original subtotal plus shared fees:
+Semua nominal disimpan sebagai angka bulat—rupiah untuk IDR dan sen untuk USD. Kalau ada pecahan dari hasil pembagian, samarata merapikannya dengan metode sisa terbesar dan aturan yang konsisten. Hasil akhirnya tetap pas sampai satuan terkecil:
 
 ```text
-discount ≤ subtotal + fees
+jumlah(pembayaran akhir) = subtotal - diskon + biaya
 ```
 
-For example, consider two original bills of Rp3.000 and Rp5.000, a Rp10.000 discount, and Rp5.000 in fees:
+Biar nggak ada pembayaran yang jadi negatif, diskon nggak boleh lebih besar dari subtotal awal ditambah biaya bersama:
+
+```text
+diskon ≤ subtotal + biaya
+```
+
+Contohnya, ada dua tagihan awal sebesar Rp3.000 dan Rp5.000, diskon Rp10.000, serta biaya Rp5.000:
 
 ```text
 subtotal           = Rp8.000
-net adjustment     = Rp10.000 - Rp5.000 = Rp5.000
-first participant  = Rp3.000 - 37.5% × Rp5.000 = Rp1.125
-second participant = Rp5.000 - 62.5% × Rp5.000 = Rp1.875
-final total        = Rp3.000
+penyesuaian bersih = Rp10.000 - Rp5.000 = Rp5.000
+peserta pertama    = Rp3.000 - 37,5% × Rp5.000 = Rp1.125
+peserta kedua      = Rp5.000 - 62,5% × Rp5.000 = Rp1.875
+total akhir        = Rp3.000
 ```
 
-When fees exceed the discount, the same formula applies the difference as a proportional surcharge instead of savings.
+Kalau biayanya lebih besar daripada diskon, rumus yang sama akan membagi selisihnya sebagai biaya tambahan proporsional.
 
-The allocation engine lives in [`src/lib/calculation.ts`](src/lib/calculation.ts) and is verified by [`src/lib/calculation.test.ts`](src/lib/calculation.test.ts).
+Logika pembagiannya ada di [`src/lib/calculation.ts`](src/lib/calculation.ts) dan dites lewat [`src/lib/calculation.test.ts`](src/lib/calculation.test.ts).
 
-## Built for a fast, dependable web experience
+## Di balik layar
 
-PRORATA is built with React 19, TypeScript, TanStack Start and Router, Tailwind CSS 4, and shadcn/ui with Base UI primitives. Motion powers the interaction details, Vitest covers the calculation engine, Biome keeps the codebase consistent, and Cloudflare Workers serves the production app globally.
+samarata dibuat dengan React 19, TypeScript, TanStack Start dan Router, Tailwind CSS 4, serta shadcn/ui dengan komponen dasar Base UI. Motion mengurus detail animasi, Vitest menjaga logika perhitungan tetap aman, Biome merapikan kode, dan Cloudflare Workers menjalankan aplikasinya secara global.
 
-### Run it locally
+### Jalanin di lokal
 
-Requires [Bun](https://bun.sh/) 1.3 or newer. No application environment variables are required.
+Kamu butuh [Bun](https://bun.sh/) 1.3 atau yang lebih baru. Nggak ada environment variable yang perlu disiapkan.
 
 ```bash
 bun install
 bun run dev
 ```
 
-Open `http://localhost:3000` (Vite will use another port if 3000 is unavailable).
+Buka `http://localhost:3000`. Kalau port 3000 sedang dipakai, Vite otomatis memilih port lain.
 
-| Command | Purpose |
+| Perintah | Kegunaan |
 | --- | --- |
-| `bun run dev` | Start the development server |
-| `bun run test` | Run the Vitest suite |
-| `bun run check` | Run Biome checks |
-| `bun run build` | Create a production build |
-| `bun run preview` | Preview the production build |
-| `bun run deploy` | Build and deploy to Cloudflare Workers |
+| `bun run dev` | Nyalakan server development |
+| `bun run test` | Jalankan semua tes Vitest |
+| `bun run check` | Cek kode dengan Biome |
+| `bun run build` | Buat production build |
+| `bun run preview` | Lihat production build di lokal |
+| `bun run deploy` | Build dan deploy ke Cloudflare Workers |
 
-For product direction and messaging, see [`docs/BRAND_REPOSITION.md`](docs/BRAND_REPOSITION.md). The original product requirements are documented in [`docs/PRD.md`](docs/PRD.md).
+Kalau mau lihat arah produk dan pesan brand-nya, buka [`docs/BRAND_REPOSITION.md`](docs/BRAND_REPOSITION.md). Kebutuhan produk awalnya ada di [`docs/PRD.md`](docs/PRD.md).
 
 ---
 
-<div align=center>
+<div align="center">
 
-Built by [yamustofa](https://github.com/yamustofa/) · **[Open PRORATA](https://prorata.yamustofa.workers.dev/)**
+Dibikin oleh [yamustofa](https://github.com/yamustofa/) · **[Buka samarata](https://samarata.yamustofa.workers.dev/)**
 
 </div>

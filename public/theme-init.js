@@ -1,5 +1,5 @@
 try {
-	const savedTheme = localStorage.getItem("prorata-theme");
+	const savedTheme = localStorage.getItem("samarata-theme");
 	const isDark =
 		savedTheme === "dark" ||
 		(!savedTheme && matchMedia("(prefers-color-scheme: dark)").matches);

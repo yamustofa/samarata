@@ -2,7 +2,7 @@
   "lockfileVersion": 1,
   "workspaces": {
     "": {
-      "name": "prorata",
+      "name": "samarata",
       "dependencies": {
         "@base-ui/react": "^1.6.0",
         "@cloudflare/vite-plugin": "^1.26.0",

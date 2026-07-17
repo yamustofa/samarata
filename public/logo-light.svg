@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-labelledby="title desc">
+  <title id="title">samarata light logo</title>
+  <desc id="desc">The samarata mark in dark green on a warm cream background</desc>
+  <rect width="800" height="800" rx="120" fill="#fff8e7"/>
+  <path d="M270 199h330q21 0 21 21v139q0 21-21 21H270a90.5 90.5 0 0 1 0-181Z" fill="#003d20"/>
+  <path d="M200 419h330a91 91 0 0 1 0 182H200q-21 0-21-21V440q0-21 21-21Z" fill="#003d20"/>
+</svg>
