@@ -483,7 +483,7 @@ button,
 }
 
 .paper-feed {
-  --paper-reveal: 100%;
+  --paper-reveal: 3%;
   clip-path: polygon(
     0 0,
     100% 0,
@@ -531,7 +531,7 @@ button,
   );
   animation: paper-cycle 6400ms linear infinite;
   transform-origin: 50% 8%;
-  will-change: transform, clip-path;
+  will-change: transform, opacity, clip-path;
 }
 
 .paper-feed .landing-receipt {
@@ -556,50 +556,39 @@ button,
 @property --paper-reveal {
   syntax: "<percentage>";
   inherits: false;
-  initial-value: 100%;
+  initial-value: 3%;
 }
 
 @keyframes paper-cycle {
   0% {
     --paper-reveal: 3%;
+    opacity: 1;
     transform: translate3d(0, 0, 0) rotate(0deg);
   }
   4.7% {
     --paper-reveal: 3%;
     animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
   }
-  15.2% {
-    --paper-reveal: 42%;
-  }
-  17.7% {
-    --paper-reveal: 42%;
-    animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
-  }
-  26.7% {
-    --paper-reveal: 72%;
-  }
-  28.7% {
-    --paper-reveal: 72%;
-    animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
-  }
   37.5%,
-  84.375% {
+  68.75% {
     --paper-reveal: 100%;
+    opacity: 1;
     transform: translate3d(0, 0, 0) rotate(0deg);
   }
-  96.875%,
+  81.25%,
   100% {
     --paper-reveal: 100%;
-    transform: translate3d(7%, calc(100% + 5rem), 0) rotate(5deg);
+    opacity: 0;
+    transform: translate3d(10%, calc(150% + 10rem), 0) rotate(7deg);
   }
 }
 
 @keyframes receipt-top-tear {
   0%,
-  84.374% {
+  68.749% {
     clip-path: inset(0);
   }
-  84.375%,
+  68.75%,
   100% {
     clip-path: polygon(
       0 5px,
