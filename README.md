@@ -16,7 +16,7 @@ The fast, transparent way to calculate what everyone should pay after discounts,
 
 A group order looks simple until the voucher arrives. Splitting the final total equally is rarely fair, while doing the math by hand means calculators, spreadsheets, rounding errors, and a receipt nobody wants to explain.
 
-PRORATA handles the awkward part. Add each person's original bill, the total discount, and any extra fees. In seconds, everyone gets a proportional share of the savings and a clear final amount to pay.
+PRORATA handles the awkward part. Add each person's original bill, the total discount, and any extra fees. In seconds, everyone gets a proportional share of the net adjustment and a clear final amount to pay.
 
 It is built for the moments that happen every day:
 
@@ -27,11 +27,11 @@ It is built for the moments that happen every day:
 
 ## Fair by design. Simple by default.
 
-**Proportional, not merely equal.** Someone responsible for 40% of the original bill receives 40% of the discount and fees. Everyone benefits according to their share.
+**Proportional, not merely equal.** Someone responsible for 40% of the original bill receives 40% of the net adjustment—the discount after shared fees are deducted.
 
 **Ready in under a minute.** The focused, guided flow takes you from order totals to participant bills and a complete result—without accounts, spreadsheets, or setup.
 
-**Easy to trust.** PRORATA shows the original subtotal, discount, fees, individual savings, and final payments so the numbers never feel like a black box.
+**Easy to trust.** PRORATA shows the original subtotal, discount, fees, individual adjustments, and final payments so the numbers never feel like a black box.
 
 **Made to share.** Turn the result into a polished receipt, save it as a high-resolution PNG, copy it as text, or send it through your device's native share menu.
 
@@ -50,10 +50,10 @@ PRORATA works in Bahasa Indonesia and English, supports IDR and USD, adapts from
 Each participant's original bill becomes their allocation weight:
 
 ```text
-weight          = individual bill / subtotal
-net adjustment  = total discount - total fees
+weight           = individual bill / subtotal
+net adjustment   = total discount - total fees
 adjustment share = net adjustment × weight
-final payment   = individual bill - adjustment share
+final payment    = individual bill - adjustment share
 ```
 
 Money is stored as integer units—whole rupiah for IDR and cents for USD. Fractional allocations are reconciled with the largest-remainder method and a deterministic tie-breaker, guaranteeing that every participant amount adds back to the exact order total:
@@ -61,6 +61,24 @@ Money is stored as integer units—whole rupiah for IDR and cents for USD. Fract
 ```text
 sum(final payments) = subtotal - discount + fees
 ```
+
+To prevent negative final payments, the discount must not exceed the original subtotal plus shared fees:
+
+```text
+discount ≤ subtotal + fees
+```
+
+For example, consider two original bills of Rp3.000 and Rp5.000, a Rp10.000 discount, and Rp5.000 in fees:
+
+```text
+subtotal           = Rp8.000
+net adjustment     = Rp10.000 - Rp5.000 = Rp5.000
+first participant  = Rp3.000 - 37.5% × Rp5.000 = Rp1.125
+second participant = Rp5.000 - 62.5% × Rp5.000 = Rp1.875
+final total        = Rp3.000
+```
+
+When fees exceed the discount, the same formula applies the difference as a proportional surcharge instead of savings.
 
 The allocation engine lives in [`src/lib/calculation.ts`](src/lib/calculation.ts) and is verified by [`src/lib/calculation.test.ts`](src/lib/calculation.test.ts).
 
