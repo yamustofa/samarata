@@ -37,4 +37,23 @@ describe("calculateSplit", () => {
 			1, 0, 0,
 		]);
 	});
+
+	it("nets fees against the discount before reducing each original bill", () => {
+		const result = calculateSplit(
+			[
+				{ id: "a", name: "Amar", amount: 3_000 },
+				{ id: "b", name: "Udin", amount: 5_000 },
+			],
+			10_000,
+			5_000,
+		);
+
+		expect(result.total).toBe(3_000);
+		expect(result.participants.map((person) => person.final)).toEqual([
+			1_125, 1_875,
+		]);
+		expect(
+			result.participants.map((person) => person.amount - person.final),
+		).toEqual([1_875, 3_125]);
+	});
 });

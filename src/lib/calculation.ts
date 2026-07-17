@@ -47,11 +47,18 @@ export function calculateSplit(
 	const weights = participants.map((participant) => participant.amount);
 	const discounts = allocateProportionally(discount, weights);
 	const fees = allocateProportionally(fee, weights);
+	const netAdjustment = discount - fee;
+	const netAllocations = allocateProportionally(
+		Math.abs(netAdjustment),
+		weights,
+	);
 	const results = participants.map((participant, index) => ({
 		...participant,
 		discount: discounts[index],
 		fee: fees[index],
-		final: participant.amount - discounts[index] + fees[index],
+		final:
+			participant.amount -
+			(netAdjustment >= 0 ? netAllocations[index] : -netAllocations[index]),
 	}));
 
 	return {

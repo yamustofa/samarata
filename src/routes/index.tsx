@@ -119,14 +119,14 @@ const copy = {
 		setupDescription:
 			"Isi diskon, biaya tambahan, dan tagihan awal masing-masing.",
 		orderName: "Nama pesanan (opsional)",
-		orderPlaceholder: "Makan siang Jumat 🍕",
+		orderPlaceholder: "Makan siang Jumat 🍔",
 		discount: "Total diskon",
 		fee: "Ongkir & biaya layanan",
 		next: "Lanjut ke peserta",
 		back: "Kembali",
 		participantsTitle: "Siapa saja yang ikut?",
 		participantsDescription:
-			"Masukkan harga makanan masing-masing sebelum diskon dan biaya.",
+			"Masukkan harga pesanan masing-masing sebelum diskon dan biaya.",
 		participant: "Peserta",
 		name: "Nama",
 		namePlaceholder: "Contoh: Budi",
@@ -137,7 +137,8 @@ const copy = {
 		required: "Wajib diisi.",
 		positive: "Nominal harus lebih dari 0.",
 		nonNegative: "Nominal tidak boleh negatif.",
-		discountTooHigh: "Diskon tidak boleh melebihi total tagihan awal.",
+		discountTooHigh:
+			"Diskon tidak boleh melebihi total tagihan awal ditambah biaya.",
 		resultsEyebrow: "Pembagian selesai",
 		resultsTitle: "Semua hemat",
 		totalPayment: "Total pembayaran",
@@ -191,7 +192,7 @@ const copy = {
 		back: "Back",
 		participantsTitle: "Who joined the order?",
 		participantsDescription:
-			"Enter each person’s food total before discounts and fees.",
+			"Enter each person’s order total before discounts and fees.",
 		participant: "Participant",
 		name: "Name",
 		namePlaceholder: "e.g. Alex",
@@ -202,7 +203,7 @@ const copy = {
 		required: "This field is required.",
 		positive: "Amount must be greater than 0.",
 		nonNegative: "Amount cannot be negative.",
-		discountTooHigh: "Discount cannot exceed the original total.",
+		discountTooHigh: "Discount cannot exceed the original total plus fees.",
 		resultsEyebrow: "Split complete",
 		resultsTitle: "Everyone saved",
 		totalPayment: "Total payment",
@@ -312,6 +313,7 @@ function Home() {
 		() => calculateSplit(participants, discount, fee),
 		[participants, discount, fee],
 	);
+	const netSavings = result.subtotal - result.total;
 
 	useEffect(() => {
 		document.documentElement.lang = locale;
@@ -367,7 +369,7 @@ function Home() {
 			)
 		)
 			return;
-		if (discount > result.subtotal) return;
+		if (discount > result.subtotal + fee) return;
 		setSubmitted(false);
 		setStep("results");
 		window.scrollTo({ top: 0, behavior: "smooth" });
@@ -409,6 +411,7 @@ function Home() {
 
 	async function receiptBlob() {
 		const embeddedReceiptFont = await getIbmPlexMonoFontDataUrl();
+		await document.fonts.load('600 28px "IBM Plex Mono"');
 		const generatedAt = new Date();
 		const dateLocale = locale === "id" ? "id-ID" : "en-US";
 		const generatedDate = new Intl.DateTimeFormat(dateLocale, {
@@ -463,9 +466,88 @@ function Home() {
 		canvas.height = height * 2;
 		const context = canvas.getContext("2d");
 		if (!context) throw new Error("Canvas is not available");
+		const receiptContext = context;
 		context.scale(2, 2);
 		context.drawImage(image, 0, 0);
 		URL.revokeObjectURL(url);
+
+		context.fillStyle = "#25241f";
+		context.fillRect(56, 68, 44, 44);
+		context.fillStyle = "#fbf2d5";
+		context.fillRect(112, 52, 400, 72);
+		context.fillRect(512, 52, 152, 72);
+		for (let index = 0; index < result.participants.length; index += 1) {
+			context.fillRect(56, 192 + index * 68, 608, 42);
+		}
+		context.fillRect(56, totalLineY + 16, 608, 48);
+		context.fillRect(56, height - 80, 608, 32);
+
+		const fontFamily = '"IBM Plex Mono", monospace';
+		function drawText(
+			text: string,
+			x: number,
+			y: number,
+			size: number,
+			color: string,
+			align: CanvasTextAlign = "left",
+			maxWidth?: number,
+		) {
+			receiptContext.font = `600 ${size}px ${fontFamily}`;
+			receiptContext.fillStyle = color;
+			receiptContext.textAlign = align;
+			receiptContext.fillText(text, x, y, maxWidth);
+		}
+
+		drawText("P/", 78, 97, 15, "#fbf2d5", "center");
+		drawText(
+			(orderName.trim() || "PRORATA").toUpperCase(),
+			120,
+			82,
+			27,
+			"#25241f",
+			"left",
+			390,
+		);
+		drawText(splitLabel, 120, 108, 16, "#766f61", "left", 390);
+		drawText("#0001", 656, 74, 14, "#766f61", "right");
+		drawText(generatedDate, 656, 94, 13, "#766f61", "right");
+		drawText(generatedTime, 656, 114, 13, "#766f61", "right");
+
+		result.participants.forEach((person, index) => {
+			const rowY = 220 + index * 68;
+			drawText(String(index + 1).padStart(2, "0"), 64, rowY, 18, "#766f61");
+			drawText(
+				person.name.toUpperCase(),
+				108,
+				rowY,
+				22,
+				"#25241f",
+				"left",
+				330,
+			);
+			drawText(
+				formatter.format(person.final),
+				656,
+				rowY,
+				22,
+				"#25241f",
+				"right",
+				210,
+			);
+		});
+
+		drawText(t.totalPayment, 56, totalLineY + 48, 18, "#766f61");
+		drawText(
+			formatter.format(result.total),
+			664,
+			totalLineY + 48,
+			28,
+			"#25241f",
+			"right",
+			360,
+		);
+		drawText(t.generated, 360, height - 60, 15, "#766f61", "center");
+
 		return await new Promise<Blob>((resolve, reject) =>
 			canvas.toBlob(
 				(blob) =>
@@ -496,15 +578,11 @@ function Home() {
 			const file = new File([blob], "prorata-receipt.png", {
 				type: "image/png",
 			});
-			const data = {
-				title: orderName || "PRORATA",
-				text: receiptText(),
-				files: [file],
-			};
+			const title = orderName || "PRORATA";
 			await navigator.share(
 				navigator.canShare?.({ files: [file] })
-					? data
-					: { title: data.title, text: data.text },
+					? { title, files: [file] }
+					: { title, text: receiptText() },
 			);
 			return;
 		}
@@ -934,7 +1012,7 @@ function Home() {
 									<Plus data-icon="inline-start" />
 									{t.add}
 								</Button>
-								{submitted && discount > result.subtotal && (
+								{submitted && discount > result.subtotal + fee && (
 									<Alert className="mt-4 rounded-xl" variant="destructive">
 										<AlertTitle>{t.discount}</AlertTitle>
 										<AlertDescription>{t.discountTooHigh}</AlertDescription>
@@ -965,7 +1043,7 @@ function Home() {
 									<h1 className="mt-4 max-w-3xl text-balance font-heading text-4xl font-semibold tracking-[-0.04em] sm:text-6xl">
 										{t.resultsTitle}{" "}
 										<span className="text-primary">
-											{formatter.format(discount)}
+											{formatter.format(netSavings)}
 										</span>
 									</h1>
 								</div>
@@ -986,7 +1064,7 @@ function Home() {
 									<SummaryCard
 										icon={<Sparkles />}
 										label={t.saved}
-										value={formatter.format(discount)}
+										value={formatter.format(netSavings)}
 									/>
 									<SummaryCard
 										icon={<Users />}
@@ -1030,7 +1108,7 @@ function Home() {
 													<div className="border-l border-border pl-4">
 														<p className="text-primary">{t.saved}</p>
 														<p className="mt-1 font-medium tabular-nums">
-															{formatter.format(person.discount)}
+															{formatter.format(person.amount - person.final)}
 														</p>
 													</div>
 												</CardContent>

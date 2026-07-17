@@ -1,186 +1,99 @@
+<div align=center>
+
 # PRORATA
 
-> Split discounts fairly.
+### Split discounts fairly.
 
-PRORATA is a proportional split calculator for shared purchases. Enter each participant's original bill, the total discount, and any additional fees; PRORATA calculates exactly how much everyone should pay.
+The fast, transparent way to calculate what everyone should pay after discounts, vouchers, cashback, delivery fees, and other shared costs.
 
-It is designed for food delivery orders, group shopping, shared gifts, cashback campaigns, and any purchase where discounts or fees should be distributed proportionally instead of equally.
+**[Try PRORATA live](https://prorata.yamustofa.workers.dev/)**
 
-## Features
+</div>
 
-- Proportional discount and fee allocation
-- Deterministic integer rounding with exact total reconciliation
-- Combined order and participant input flow
-- Indonesian and English interface copy
-- Indonesian rupiah and US dollar formatting
-- Light and dark themes with system preference detection
-- Persistent manual theme preference
-- Responsive mobile navigation and calculator layout
-- Detailed per-person calculation results
-- Thermal-paper receipt design
-- Downloadable PNG receipt
-- Clipboard copy and native Web Share support
-- Animated landing-page printer and pointer-driven result receipt
-- Reduced-motion support
-- Open Graph, Twitter Card, manifest, and robots metadata
+[![PRORATA — Split discounts fairly](public/og-prorata.png)](https://prorata.yamustofa.workers.dev/)
 
-## How the calculation works
+## The fair answer to “So… how much do I pay?”
 
-PRORATA uses each participant's original bill as their allocation weight.
+A group order looks simple until the voucher arrives. Splitting the final total equally is rarely fair, while doing the math by hand means calculators, spreadsheets, rounding errors, and a receipt nobody wants to explain.
 
-For participant `i`:
+PRORATA handles the awkward part. Add each person's original bill, the total discount, and any extra fees. In seconds, everyone gets a proportional share of the savings and a clear final amount to pay.
+
+It is built for the moments that happen every day:
+
+- 🍕 **Food delivery** — divide GoFood, GrabFood, or ShopeeFood promos by each person's order
+- 🛒 **Group shopping** — share discounts and cashback without favoring the biggest or smallest item
+- 🎁 **Shared purchases** — settle gifts, groceries, subscriptions, and event expenses clearly
+- 🚕 **Shared rides** — distribute vouchers and additional charges by each rider's portion
+
+## Fair by design. Simple by default.
+
+**Proportional, not merely equal.** Someone responsible for 40% of the original bill receives 40% of the discount and fees. Everyone benefits according to their share.
+
+**Ready in under a minute.** The focused, guided flow takes you from order totals to participant bills and a complete result—without accounts, spreadsheets, or setup.
+
+**Easy to trust.** PRORATA shows the original subtotal, discount, fees, individual savings, and final payments so the numbers never feel like a black box.
+
+**Made to share.** Turn the result into a polished receipt, save it as a high-resolution PNG, copy it as text, or send it through your device's native share menu.
+
+## One shared order. Three quick steps.
+
+1. **Enter the order** — add an optional name, total discount, and delivery or service fees.
+2. **Add everyone** — enter each participant and their original bill before adjustments.
+3. **Share the result** — review the reconciled split and send the receipt to the group.
+
+PRORATA works in Bahasa Indonesia and English, supports IDR and USD, adapts from phone to desktop, and includes light and dark themes. Reduced-motion preferences are respected throughout the experience.
+
+> **Everyone pays their fair share. No more. No less.**
+
+## How the calculation stays exact
+
+Each participant's original bill becomes their allocation weight:
 
 ```text
-weightᵢ = original billᵢ / subtotal
-discountᵢ = total discount × weightᵢ
-feeᵢ = total fee × weightᵢ
-final paymentᵢ = original billᵢ - discountᵢ + feeᵢ
+weight          = individual bill / subtotal
+net adjustment  = total discount - total fees
+adjustment share = net adjustment × weight
+final payment   = individual bill - adjustment share
 ```
 
-Currency values are stored as integers—whole rupiah for IDR and cents for USD. Fractional allocations are reconciled using the largest-remainder method, with participant order as a deterministic tie-breaker. This guarantees that:
+Money is stored as integer units—whole rupiah for IDR and cents for USD. Fractional allocations are reconciled with the largest-remainder method and a deterministic tie-breaker, guaranteeing that every participant amount adds back to the exact order total:
 
 ```text
-sum(participant discounts) = total discount
-sum(participant fees) = total fee
-sum(final payments) = subtotal - discount + fee
+sum(final payments) = subtotal - discount + fees
 ```
 
-The calculation is implemented in [`src/lib/calculation.ts`](src/lib/calculation.ts) and covered by unit tests in [`src/lib/calculation.test.ts`](src/lib/calculation.test.ts).
+The allocation engine lives in [`src/lib/calculation.ts`](src/lib/calculation.ts) and is verified by [`src/lib/calculation.test.ts`](src/lib/calculation.test.ts).
 
-## Tech stack
+## Built for a fast, dependable web experience
 
-- [React 19](https://react.dev/)
-- [TanStack Start](https://tanstack.com/start)
-- [TanStack Router](https://tanstack.com/router)
-- [Tailwind CSS 4](https://tailwindcss.com/)
-- [shadcn/ui](https://ui.shadcn.com/) with Base UI primitives
-- [Motion](https://motion.dev/) for interactive animation
-- [Vitest](https://vitest.dev/) for unit tests
-- [Biome](https://biomejs.dev/) for formatting and static checks
-- [Cloudflare Workers](https://workers.cloudflare.com/) for deployment
-- [Bun](https://bun.sh/) as the package manager
+PRORATA is built with React 19, TypeScript, TanStack Start and Router, Tailwind CSS 4, and shadcn/ui with Base UI primitives. Motion powers the interaction details, Vitest covers the calculation engine, Biome keeps the codebase consistent, and Cloudflare Workers serves the production app globally.
 
-## Requirements
+### Run it locally
 
-- Bun 1.3 or newer
-- A modern browser with JavaScript enabled
-- A Cloudflare account only if you want to deploy
-
-No application environment variables are required.
-
-## Local development
-
-Install dependencies:
+Requires [Bun](https://bun.sh/) 1.3 or newer. No application environment variables are required.
 
 ```bash
 bun install
-```
-
-Start the development server:
-
-```bash
 bun run dev
 ```
 
-The app is served at `http://localhost:3000` by default. Vite will select another available port if port 3000 is already occupied.
-
-## Commands
+Open `http://localhost:3000` (Vite will use another port if 3000 is unavailable).
 
 | Command | Purpose |
 | --- | --- |
 | `bun run dev` | Start the development server |
-| `bun run build` | Create client and server production bundles |
-| `bun run preview` | Preview the production build locally |
-| `bun run test` | Run the Vitest test suite |
+| `bun run test` | Run the Vitest suite |
 | `bun run check` | Run Biome checks |
-| `bun run lint` | Run Biome linting |
-| `bun run format` | Run Biome formatting |
-| `bun run generate-routes` | Regenerate the TanStack Router route tree |
+| `bun run build` | Create a production build |
+| `bun run preview` | Preview the production build |
 | `bun run deploy` | Build and deploy to Cloudflare Workers |
 
-## Project structure
+For product direction and messaging, see [`docs/BRAND_REPOSITION.md`](docs/BRAND_REPOSITION.md). The original product requirements are documented in [`docs/PRD.md`](docs/PRD.md).
 
-```text
-.
-├── docs/
-│   ├── BRAND_REPOSITION.md    # PRORATA brand positioning
-│   └── PRD.md                 # Original product requirements
-├── public/
-│   ├── manifest.json          # Installable web app metadata
-│   ├── og-prorata.png         # Social sharing image
-│   ├── robots.txt
-│   └── theme-init.js          # Pre-render theme initialization
-├── src/
-│   ├── assets/
-│   │   └── printer.png        # Landing-page printer artwork
-│   ├── components/ui/         # Local shadcn/ui components
-│   ├── lib/
-│   │   ├── calculation.ts     # Proportional allocation engine
-│   │   └── calculation.test.ts
-│   ├── routes/
-│   │   ├── __root.tsx         # Root document and global metadata
-│   │   └── index.tsx          # PRORATA application flow
-│   ├── router.tsx
-│   └── styles.css             # Theme tokens and global styles
-├── components.json            # shadcn/ui configuration
-├── vite.config.ts
-└── wrangler.jsonc             # Cloudflare Worker configuration
-```
+---
 
-`src/routeTree.gen.ts` is generated by TanStack Router and should not be edited manually.
+<div align=center>
 
-## Localization and currency
+Built by [yamustofa](https://github.com/yamustofa/) · **[Open PRORATA](https://prorata.yamustofa.workers.dev/)**
 
-The app defaults to Bahasa Indonesia and IDR. Users can switch independently between:
-
-- Bahasa Indonesia and English
-- IDR and USD
-
-IDR values are calculated in whole rupiah. USD values are calculated in cents and formatted with two decimal places.
-
-Interface translations currently live in the `copy` object in [`src/routes/index.tsx`](src/routes/index.tsx).
-
-## Themes and motion
-
-On the first visit, PRORATA follows the operating system's light or dark preference. A manual choice is stored under `prorata-theme` in `localStorage`.
-
-The small startup script at [`public/theme-init.js`](public/theme-init.js) applies the stored or system theme before the React application renders, preventing a light-theme flash. Motion effects respect `prefers-reduced-motion`.
-
-## Receipt sharing
-
-Results can be:
-
-- Saved as a high-resolution PNG
-- Copied as plain text
-- Shared through the browser's native Web Share API
-
-If native sharing is unavailable, PRORATA falls back to copying the receipt text.
-
-## Deployment
-
-Authenticate Wrangler once:
-
-```bash
-bunx wrangler login
-```
-
-Deploy the production build:
-
-```bash
-bun run deploy
-```
-
-Cloudflare configuration lives in [`wrangler.jsonc`](wrangler.jsonc). If the app later requires configuration values:
-
-- Put non-secret Worker variables under `vars` in `wrangler.jsonc`.
-- Add production secrets with `bunx wrangler secret put <NAME>`.
-- Use an uncommitted `.dev.vars` file for local-only values.
-
-## Product documentation
-
-- [`docs/BRAND_REPOSITION.md`](docs/BRAND_REPOSITION.md) defines the PRORATA positioning, promise, audience, and messaging.
-- [`docs/PRD.md`](docs/PRD.md) contains the original FOODISC product requirements that informed the initial MVP.
-
-## Author
-
-Built by [yamustofa](https://github.com/yamustofa/).
+</div>
