@@ -826,16 +826,43 @@ function Home() {
 									</div>
 									<HeroReceipt currency={currency} locale={locale} />
 								</section>
-								<footer className="border-t border-border/70 px-5 py-5 text-center font-mono text-[11px] text-muted-foreground sm:px-8">
-									<span>{locale === "id" ? "Dibuat oleh " : "Made by "}</span>
-									<a
-										className="font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:text-primary focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
-										href="https://github.com/yamustofa/"
-										rel="noreferrer"
-										target="_blank"
-									>
-										yamustofa
-									</a>
+								<footer className="border-t border-border/70 font-mono text-[11px] text-muted-foreground">
+									<div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-5 sm:px-8">
+										<nav
+											aria-label="Social media"
+											className="flex shrink-0 items-center gap-4"
+										>
+											<a
+												className="transition-colors hover:text-foreground focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+												href="https://www.threads.com/@mustavibe.dev"
+												rel="noreferrer"
+												target="_blank"
+											>
+												Threads
+											</a>
+											<a
+												className="transition-colors hover:text-foreground focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+												href="https://x.com/mustavibe"
+												rel="noreferrer"
+												target="_blank"
+											>
+												X
+											</a>
+										</nav>
+										<div className="text-right">
+											<span>
+												{locale === "id" ? "Dibuat oleh " : "Made by "}
+											</span>
+											<a
+												className="font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:text-primary focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+												href="https://github.com/yamustofa/"
+												rel="noreferrer"
+												target="_blank"
+											>
+												yamustofa
+											</a>
+										</div>
+									</div>
 								</footer>
 							</div>
 						)}
