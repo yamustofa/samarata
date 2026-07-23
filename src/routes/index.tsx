@@ -118,6 +118,30 @@ const copy = {
 			"Hitungan transparan",
 			"Struk siap dibagikan",
 		],
+		howButton: "Gimana cara kerjanya?",
+		howIntro:
+			"Singkatnya, samarata bantu beresin patungan saat satu pesanan punya diskon dan biaya bersama. Nggak perlu lagi debat siapa bayar berapa atau hitung manual di kalkulator.",
+		howSteps: [
+			{
+				title: "Masukkan total bersama",
+				description: "Isi total diskon, ongkir, dan biaya layanan dari struk.",
+			},
+			{
+				title: "Masukkan pesanan teman",
+				description: "Tulis nama dan harga awal pesanan masing-masing orang.",
+			},
+			{
+				title: "Langsung dapat bagiannya",
+				description:
+					"Diskon dan biaya dibagi sesuai porsi pesanan, lalu struknya bisa langsung dibagikan.",
+			},
+		],
+		useCaseLabel: "Contoh paling relate",
+		useCaseTitle: "Patungan makan siang bareng teman kantor",
+		useCaseDescription:
+			"Kamu pesan bareng lewat GoFood, GrabFood, atau ShopeeFood dan dapat diskon Rp30.000. Budi pesan Rp40.000, Siti Rp35.000, dan Andi Rp25.000. samarata membagi hematnya sesuai porsi: Rp12.000, Rp10.500, dan Rp7.500. Jadi tetap adil meski harga pesanan beda-beda.",
+		howCta: "Oke, mulai hitung",
+		closeHow: "Tutup penjelasan",
 		setupTitle: "Masukkan tagihannya",
 		setupDescription:
 			"Isi diskon, biaya tambahan, dan tagihan awal masing-masing.",
@@ -145,8 +169,9 @@ const copy = {
 		resultsEyebrow: "Pembagian selesai",
 		resultsTitle: "Semua hemat",
 		totalPayment: "Total pembayaran",
+		totalSaved: "Total hemat",
 		people: "Peserta",
-		original: "Awal",
+		original: "Harga awal",
 		pays: "Bayar",
 		saved: "Hemat",
 		receipt: "Struk ringkas",
@@ -184,6 +209,30 @@ const copy = {
 			"Transparent math",
 			"A receipt ready to share",
 		],
+		howButton: "How does it work?",
+		howIntro:
+			"In short, samarata sorts out group payments when one order has a shared discount and extra fees. No more debating who owes what or doing the math by hand.",
+		howSteps: [
+			{
+				title: "Enter the shared totals",
+				description: "Add the discount, delivery fee, and service fee.",
+			},
+			{
+				title: "Add everyone’s order",
+				description: "Enter each person’s name and original order amount.",
+			},
+			{
+				title: "Get the fair split",
+				description:
+					"Discounts and fees follow each order’s share, and the receipt is ready to send.",
+			},
+		],
+		useCaseLabel: "A familiar example",
+		useCaseTitle: "A group lunch order with coworkers",
+		useCaseDescription:
+			"You order together through GoFood, GrabFood, or ShopeeFood and get a Rp30,000 discount. Alex orders Rp40,000, Sam Rp35,000, and Jamie Rp25,000. samarata splits the savings by order share: Rp12,000, Rp10,500, and Rp7,500. Fair, even when everyone orders something different.",
+		howCta: "Got it, start splitting",
+		closeHow: "Close explanation",
 		setupTitle: "Enter the bills",
 		setupDescription:
 			"Add the discount, extra fees, and everyone’s original bill.",
@@ -210,6 +259,7 @@ const copy = {
 		resultsEyebrow: "Split complete",
 		resultsTitle: "Everyone saved",
 		totalPayment: "Total payment",
+		totalSaved: "Total saved",
 		people: "Participants",
 		original: "Original",
 		pays: "Pays",
@@ -292,6 +342,7 @@ function Home() {
 	const [currency, setCurrency] = useState<Currency>("IDR");
 	const [theme, setTheme] = useState<Theme>("light");
 	const [navOpen, setNavOpen] = useState(false);
+	const [howOpen, setHowOpen] = useState(false);
 	const [step, setStep] = useState<Step>("landing");
 	const [orderName, setOrderName] = useState("");
 	const [discount, setDiscount] = useState(0);
@@ -302,6 +353,7 @@ function Home() {
 	const [submitted, setSubmitted] = useState(false);
 	const [notice, setNotice] = useState("");
 	const nextId = useRef(2);
+	const howCloseRef = useRef<HTMLButtonElement>(null);
 	const t = copy[locale];
 	const formatter = useMemo(
 		() =>
@@ -321,6 +373,21 @@ function Home() {
 	useEffect(() => {
 		document.documentElement.lang = locale;
 	}, [locale]);
+
+	useEffect(() => {
+		if (!howOpen) return;
+		const previousOverflow = document.body.style.overflow;
+		const closeOnEscape = (event: KeyboardEvent) => {
+			if (event.key === "Escape") setHowOpen(false);
+		};
+		document.body.style.overflow = "hidden";
+		document.addEventListener("keydown", closeOnEscape);
+		howCloseRef.current?.focus();
+		return () => {
+			document.body.style.overflow = previousOverflow;
+			document.removeEventListener("keydown", closeOnEscape);
+		};
+	}, [howOpen]);
 
 	useEffect(() => {
 		const savedTheme = window.localStorage.getItem("samarata-theme");
@@ -399,11 +466,13 @@ function Home() {
 			splitLabel,
 			"#0001",
 			"",
-			...result.participants.map(
-				(person, index) =>
-					`${String(index + 1).padStart(2, "0")}  ${person.name}  ${formatter.format(person.final)}`,
-			),
+			...result.participants.flatMap((person, index) => [
+				`${String(index + 1).padStart(2, "0")}  ${person.name}  ${formatter.format(person.final)}`,
+				`    ${t.original} : ${formatter.format(person.amount)}`,
+				`    ${t.saved} : ${formatter.format(person.amount - person.final)}`,
+			]),
 			"",
+			`${t.totalSaved}: ${formatter.format(netSavings)}`,
 			`${t.totalPayment}: ${formatter.format(result.total)}`,
 			"",
 			t.generated,
@@ -429,7 +498,8 @@ function Home() {
 			timeZoneName: "short",
 		}).format(generatedAt);
 		const width = 720;
-		const height = 390 + result.participants.length * 68;
+		const rowHeight = 80;
+		const height = 460 + result.participants.length * rowHeight;
 		const brandLogoUrl = new URL("/logo.png", window.location.origin).href;
 		const paperEdgeSegments = 134;
 		const paperEdgeStep = 672 / paperEdgeSegments;
@@ -451,11 +521,11 @@ function Home() {
 		const rows = result.participants
 			.map(
 				(person, index) =>
-					`<text x="64" y="${220 + index * 68}" font-size="18" fill="#766f61">${String(index + 1).padStart(2, "0")}</text><text x="108" y="${220 + index * 68}" font-size="22" fill="#25241f">${escapeXml(person.name.toUpperCase())}</text><text x="656" y="${220 + index * 68}" text-anchor="end" font-size="22" fill="#25241f">${escapeXml(formatter.format(person.final))}</text>`,
+					`<text x="64" y="${206 + index * rowHeight}" font-size="18" fill="#766f61">${String(index + 1).padStart(2, "0")}</text><text x="108" y="${206 + index * rowHeight}" font-size="22" fill="#25241f">${escapeXml(person.name.toUpperCase())}</text><text x="656" y="${206 + index * rowHeight}" text-anchor="end" font-size="22" fill="#25241f">${escapeXml(formatter.format(person.final))}</text><text x="108" y="${228 + index * rowHeight}" font-size="12" fill="#9b9485">${escapeXml(`${t.original} : ${formatter.format(person.amount)}`)}</text><text x="108" y="${246 + index * rowHeight}" font-size="12" fill="#9b9485">${escapeXml(`${t.saved} : ${formatter.format(person.amount - person.final)}`)}</text>`,
 			)
 			.join("");
-		const totalLineY = 250 + result.participants.length * 68;
-		const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><defs><style>@font-face{font-family:IBMPlexMono;src:url('${embeddedReceiptFont}') format('woff2');font-weight:600}text{font-family:IBMPlexMono,monospace;font-weight:600}</style><filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#000" flood-opacity=".16"/></filter></defs><polygon points="${paperPoints}" fill="#fbf2d5" stroke="#d7cba9" filter="url(#shadow)"/><image href="${brandLogoUrl}" x="56" y="68" width="44" height="44"/><text x="120" y="82" font-size="27" fill="#25241f">${escapeXml((orderName.trim() || "samarata").toUpperCase())}</text><text x="120" y="108" font-size="16" fill="#766f61">${escapeXml(splitLabel)}</text><text x="656" y="74" text-anchor="end" font-size="14" fill="#766f61">#0001</text><text x="656" y="94" text-anchor="end" font-size="13" fill="#766f61">${escapeXml(generatedDate)}</text><text x="656" y="114" text-anchor="end" font-size="13" fill="#766f61">${escapeXml(generatedTime)}</text><line x1="56" x2="664" y1="152" y2="152" stroke="#8f8879" stroke-opacity=".55" stroke-dasharray="7 7"/>${rows}<line x1="56" x2="664" y1="${totalLineY}" y2="${totalLineY}" stroke="#8f8879" stroke-opacity=".55" stroke-dasharray="7 7"/><text x="56" y="${totalLineY + 48}" font-size="18" fill="#766f61">${escapeXml(t.totalPayment)}</text><text x="664" y="${totalLineY + 48}" text-anchor="end" font-size="28" fill="#25241f">${escapeXml(formatter.format(result.total))}</text><text x="360" y="${height - 60}" text-anchor="middle" font-size="15" fill="#766f61">${escapeXml(t.generated)}</text></svg>`;
+		const totalLineY = 264 + result.participants.length * rowHeight;
+		const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><defs><style>@font-face{font-family:IBMPlexMono;src:url('${embeddedReceiptFont}') format('woff2');font-weight:600}text{font-family:IBMPlexMono,monospace;font-weight:600}</style><filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#000" flood-opacity=".16"/></filter></defs><polygon points="${paperPoints}" fill="#fbf2d5" stroke="#d7cba9" filter="url(#shadow)"/><image href="${brandLogoUrl}" x="56" y="68" width="44" height="44"/><text x="120" y="82" font-size="27" fill="#25241f">${escapeXml((orderName.trim() || "samarata").toUpperCase())}</text><text x="120" y="108" font-size="16" fill="#766f61">${escapeXml(splitLabel)}</text><text x="656" y="74" text-anchor="end" font-size="14" fill="#766f61">#0001</text><text x="656" y="94" text-anchor="end" font-size="13" fill="#766f61">${escapeXml(generatedDate)}</text><text x="656" y="114" text-anchor="end" font-size="13" fill="#766f61">${escapeXml(generatedTime)}</text><line x1="56" x2="664" y1="152" y2="152" stroke="#8f8879" stroke-opacity=".55" stroke-dasharray="7 7"/>${rows}<line x1="56" x2="664" y1="${totalLineY}" y2="${totalLineY}" stroke="#8f8879" stroke-opacity=".55" stroke-dasharray="7 7"/><text x="56" y="${totalLineY + 38}" font-size="13" fill="#9b9485">${escapeXml(t.totalSaved)}</text><text x="664" y="${totalLineY + 38}" text-anchor="end" font-size="15" fill="#9b9485">${escapeXml(formatter.format(netSavings))}</text><text x="56" y="${totalLineY + 84}" font-size="18" fill="#766f61">${escapeXml(t.totalPayment)}</text><text x="664" y="${totalLineY + 84}" text-anchor="end" font-size="28" fill="#25241f">${escapeXml(formatter.format(result.total))}</text><text x="360" y="${height - 60}" text-anchor="middle" font-size="15" fill="#766f61">${escapeXml(t.generated)}</text></svg>`;
 		const image = new Image();
 		const url = URL.createObjectURL(
 			new Blob([svg], { type: "image/svg+xml;charset=utf-8" }),
@@ -486,9 +556,9 @@ function Home() {
 		context.fillRect(112, 52, 400, 72);
 		context.fillRect(512, 52, 152, 72);
 		for (let index = 0; index < result.participants.length; index += 1) {
-			context.fillRect(56, 192 + index * 68, 608, 42);
+			context.fillRect(56, 184 + index * rowHeight, 608, 64);
 		}
-		context.fillRect(56, totalLineY + 16, 608, 48);
+		context.fillRect(56, totalLineY + 16, 608, 84);
 		context.fillRect(56, height - 80, 608, 32);
 
 		const fontFamily = '"IBM Plex Mono", monospace';
@@ -523,7 +593,7 @@ function Home() {
 		drawText(generatedTime, 656, 114, 13, "#766f61", "right");
 
 		result.participants.forEach((person, index) => {
-			const rowY = 220 + index * 68;
+			const rowY = 206 + index * rowHeight;
 			drawText(String(index + 1).padStart(2, "0"), 64, rowY, 18, "#766f61");
 			drawText(
 				person.name.toUpperCase(),
@@ -543,13 +613,41 @@ function Home() {
 				"right",
 				210,
 			);
+			drawText(
+				`${t.original} : ${formatter.format(person.amount)}`,
+				108,
+				rowY + 22,
+				12,
+				"#9b9485",
+				"left",
+				350,
+			);
+			drawText(
+				`${t.saved} : ${formatter.format(person.amount - person.final)}`,
+				108,
+				rowY + 40,
+				12,
+				"#9b9485",
+				"left",
+				350,
+			);
 		});
 
-		drawText(t.totalPayment, 56, totalLineY + 48, 18, "#766f61");
+		drawText(t.totalSaved, 56, totalLineY + 38, 13, "#9b9485");
+		drawText(
+			formatter.format(netSavings),
+			664,
+			totalLineY + 38,
+			15,
+			"#9b9485",
+			"right",
+			360,
+		);
+		drawText(t.totalPayment, 56, totalLineY + 84, 18, "#766f61");
 		drawText(
 			formatter.format(result.total),
 			664,
-			totalLineY + 48,
+			totalLineY + 84,
 			28,
 			"#25241f",
 			"right",
@@ -792,14 +890,25 @@ function Home() {
 										>
 											{t.subtitle}
 										</motion.p>
-										<Button
-											className="mt-8 min-h-12 px-6 transition-transform active:scale-[0.96]"
-											onClick={() => setStep("setup")}
-											size="lg"
-										>
-											{t.start}
-											<ArrowRight data-icon="inline-end" />
-										</Button>
+										<div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
+											<Button
+												className="min-h-12 px-6 transition-transform active:scale-[0.96]"
+												onClick={() => setStep("setup")}
+												size="lg"
+											>
+												{t.start}
+												<ArrowRight data-icon="inline-end" />
+											</Button>
+											<Button
+												className="min-h-12 px-6"
+												onClick={() => setHowOpen(true)}
+												size="lg"
+												variant="secondary"
+											>
+												<Sparkles data-icon="inline-start" />
+												{t.howButton}
+											</Button>
+										</div>
 										<motion.ul
 											animate="show"
 											className="mx-auto mt-10 grid max-w-xl border-y border-border text-sm sm:grid-cols-3 lg:mx-0"
@@ -1177,16 +1286,32 @@ function Home() {
 													<ul className="flex flex-col gap-3">
 														{result.participants.map((person, index) => (
 															<li
-																className="flex items-center justify-between gap-4"
+																className="flex items-start justify-between gap-4"
 																key={person.id}
 															>
-																<div className="flex items-center gap-3">
+																<div className="flex items-start gap-3">
 																	<span className="font-mono text-[10px] text-muted-foreground">
 																		{String(index + 1).padStart(2, "0")}
 																	</span>
-																	<span className="font-mono text-xs uppercase tracking-wide">
-																		{person.name}
-																	</span>
+																	<div>
+																		<p className="font-mono text-xs uppercase tracking-wide">
+																			{person.name}
+																		</p>
+																		<div className="mt-1 grid grid-cols-[auto_auto_1fr] gap-x-1 font-mono text-[9px] leading-4 text-muted-foreground/70">
+																			<span>{t.original}</span>
+																			<span>:</span>
+																			<span>
+																				{formatter.format(person.amount)}
+																			</span>
+																			<span>{t.saved}</span>
+																			<span>:</span>
+																			<span>
+																				{formatter.format(
+																					person.amount - person.final,
+																				)}
+																			</span>
+																		</div>
+																	</div>
 																</div>
 																<strong className="font-mono font-semibold tabular-nums">
 																	{formatter.format(person.final)}
@@ -1195,6 +1320,12 @@ function Home() {
 														))}
 													</ul>
 													<Separator className="my-4" />
+													<div className="mb-2 flex items-center justify-between font-mono text-[10px] text-muted-foreground/70">
+														<span>{t.totalSaved}</span>
+														<span className="tabular-nums">
+															{formatter.format(netSavings)}
+														</span>
+													</div>
 													<div className="flex items-center justify-between">
 														<span className="text-muted-foreground">
 															{t.totalPayment}
@@ -1267,6 +1398,111 @@ function Home() {
 							</section>
 						)}
 					</motion.div>
+				</AnimatePresence>
+				<AnimatePresence>
+					{howOpen && (
+						<motion.div
+							animate={{ opacity: 1 }}
+							aria-labelledby="how-it-works-title"
+							aria-describedby="how-it-works-description"
+							aria-modal="true"
+							className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-foreground/45 p-0 backdrop-blur-sm sm:items-center sm:p-6"
+							exit={{ opacity: 0 }}
+							initial={{ opacity: 0 }}
+							onPointerDown={(event) => {
+								if (event.target === event.currentTarget) setHowOpen(false);
+							}}
+							role="dialog"
+							transition={{ duration: 0.16 }}
+						>
+							<motion.div
+								animate={{ opacity: 1, transform: "translateY(0px) scale(1)" }}
+								className="relative max-h-[calc(100dvh-1rem)] w-full max-w-2xl overflow-y-auto rounded-t-3xl border border-border bg-background p-6 shadow-2xl sm:rounded-3xl sm:p-8"
+								exit={{ opacity: 0, transform: "translateY(16px) scale(0.98)" }}
+								initial={{
+									opacity: 0,
+									transform: "translateY(20px) scale(0.98)",
+								}}
+								transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
+							>
+								<Button
+									aria-label={t.closeHow}
+									className="absolute top-4 right-4"
+									onClick={() => setHowOpen(false)}
+									ref={howCloseRef}
+									size="icon"
+									variant="ghost"
+								>
+									<X aria-hidden="true" />
+								</Button>
+								<p className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-primary">
+									{t.howButton}
+								</p>
+								<h2
+									className="max-w-lg text-balance font-heading text-3xl font-semibold tracking-[-0.035em] sm:text-4xl"
+									id="how-it-works-title"
+								>
+									{locale === "id" ? (
+										<>
+											Jadi, <span className="text-primary">samarata</span> itu
+											apa?
+										</>
+									) : (
+										<>
+											So, what is <span className="text-primary">samarata</span>
+											?
+										</>
+									)}
+								</h2>
+								<p
+									className="mt-4 max-w-xl text-pretty text-sm leading-6 text-muted-foreground sm:text-base"
+									id="how-it-works-description"
+								>
+									{t.howIntro}
+								</p>
+								<ol className="mt-6 grid gap-3 sm:grid-cols-3">
+									{t.howSteps.map((item, index) => (
+										<li
+											className="rounded-xl border border-border bg-muted/40 p-4"
+											key={item.title}
+										>
+											<span className="font-mono text-[10px] text-primary">
+												0{index + 1}
+											</span>
+											<h3 className="mt-2 text-sm font-semibold">
+												{item.title}
+											</h3>
+											<p className="mt-1 text-xs leading-5 text-muted-foreground">
+												{item.description}
+											</p>
+										</li>
+									))}
+								</ol>
+								<div className="mt-5 rounded-2xl border border-primary/20 bg-primary/8 p-5">
+									<p className="font-mono text-[10px] font-medium uppercase tracking-[0.15em] text-primary">
+										{t.useCaseLabel}
+									</p>
+									<h3 className="mt-2 font-heading text-lg font-semibold">
+										{t.useCaseTitle}
+									</h3>
+									<p className="mt-2 text-pretty text-xs leading-5 text-muted-foreground sm:text-sm sm:leading-6">
+										{t.useCaseDescription}
+									</p>
+								</div>
+								<Button
+									className="mt-6 w-full"
+									onClick={() => {
+										setHowOpen(false);
+										setStep("setup");
+									}}
+									size="lg"
+								>
+									{t.howCta}
+									<ArrowRight data-icon="inline-end" />
+								</Button>
+							</motion.div>
+						</motion.div>
+					)}
 				</AnimatePresence>
 			</main>
 		</MotionConfig>
