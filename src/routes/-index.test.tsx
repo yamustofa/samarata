@@ -1,6 +1,13 @@
 // @vitest-environment jsdom
 
 import {
+	createMemoryHistory,
+	createRootRoute,
+	createRoute,
+	createRouter,
+	RouterProvider,
+} from "@tanstack/react-router";
+import {
 	cleanup,
 	fireEvent,
 	render,
@@ -9,6 +16,27 @@ import {
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Home } from "./index";
+
+async function renderHome() {
+	const rootRoute = createRootRoute();
+	const indexRoute = createRoute({
+		component: Home,
+		getParentRoute: () => rootRoute,
+		path: "/",
+	});
+	const privacyRoute = createRoute({
+		component: () => null,
+		getParentRoute: () => rootRoute,
+		path: "privacy",
+	});
+	const router = createRouter({
+		history: createMemoryHistory({ initialEntries: ["/"] }),
+		routeTree: rootRoute.addChildren([indexRoute, privacyRoute]),
+	});
+
+	await router.load();
+	return render(<RouterProvider router={router} />);
+}
 
 beforeEach(() => {
 	window.localStorage.clear();
@@ -41,10 +69,14 @@ afterEach(() => {
 
 describe("calculator flow", () => {
 	it("completes setup, participant entry, and results without login", async () => {
-		render(<Home />);
+		await renderHome();
 		expect(
 			screen.queryByRole("link", { name: "Traktir kopi susu" }),
 		).toBeNull();
+		expect(
+			screen.getByRole("navigation", { name: "Media sosial dan privasi" })
+				.textContent,
+		).toContain("X•Privasi & analytics");
 
 		fireEvent.click(screen.getByRole("button", { name: "Mulai hitung" }));
 		const setupHeading = await screen.findByRole("heading", {
@@ -93,7 +125,7 @@ describe("calculator flow", () => {
 			configurable: true,
 			value: { writeText: vi.fn().mockRejectedValue(new Error("Denied")) },
 		});
-		render(<Home />);
+		await renderHome();
 		fireEvent.click(screen.getByRole("button", { name: "Mulai hitung" }));
 		fireEvent.change(await screen.findByLabelText("Nama"), {
 			target: { value: "Budi" },
@@ -112,7 +144,7 @@ describe("calculator flow", () => {
 	});
 
 	it("dismisses the closed use-case survey for the current result", async () => {
-		render(<Home />);
+		await renderHome();
 		fireEvent.click(screen.getByRole("button", { name: "Mulai hitung" }));
 		fireEvent.change(await screen.findByLabelText("Nama"), {
 			target: { value: "Budi" },

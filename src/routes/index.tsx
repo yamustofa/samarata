@@ -33,6 +33,7 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { TipCard } from "@/components/monetization/tip-card";
 import { UseCaseSurvey } from "@/components/monetization/use-case-survey";
+import { SiteFooter } from "@/components/site-footer";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -867,7 +868,12 @@ export function Home() {
 
 	return (
 		<MotionConfig reducedMotion="user">
-			<main className="min-h-screen overflow-hidden bg-background text-foreground">
+			<main
+				className={cn(
+					"flex min-h-dvh flex-col overflow-hidden bg-background text-foreground",
+					step === "landing" && "lg:h-dvh",
+				)}
+			>
 				<header className="relative z-20 border-b border-border bg-background">
 					<div className="mx-auto flex min-h-16 max-w-6xl flex-wrap items-center justify-between gap-y-2 px-5 py-2 sm:flex-nowrap sm:px-8 sm:py-0">
 						<button
@@ -1007,6 +1013,9 @@ export function Home() {
 							transition: { duration: 0.14, ease: [0.4, 0, 1, 1] },
 						}}
 						initial={{ opacity: 0, transform: "translateY(10px) scale(0.99)" }}
+						className={cn(
+							step === "landing" && "lg:flex lg:min-h-0 lg:flex-1 lg:flex-col",
+						)}
 						key={step}
 						transition={{
 							duration: 0.22,
@@ -1014,8 +1023,8 @@ export function Home() {
 						}}
 					>
 						{step === "landing" && (
-							<div>
-								<section className="mx-auto grid min-h-[calc(100vh-8rem)] max-w-6xl items-center gap-14 px-5 py-16 sm:px-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(300px,0.75fr)] lg:py-24">
+							<div className="lg:flex lg:min-h-0 lg:flex-1 lg:flex-col">
+								<section className="mx-auto grid min-h-[calc(100vh-8rem)] max-w-6xl items-center gap-14 px-5 py-16 sm:px-8 lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(0,1.25fr)_minmax(300px,0.75fr)] lg:overflow-y-auto lg:py-6 xl:py-8">
 									<div className="relative z-10 text-center lg:text-left">
 										<motion.div
 											animate={{ opacity: 1, transform: "translateY(0px)" }}
@@ -1113,50 +1122,7 @@ export function Home() {
 									</div>
 									<HeroReceipt currency={currency} locale={locale} />
 								</section>
-								<footer className="border-t border-border/70 font-mono text-[11px] text-muted-foreground">
-									<div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-5 sm:px-8">
-										<nav
-											aria-label="Social media"
-											className="flex shrink-0 items-center gap-4"
-										>
-											<a
-												className="inline-flex min-h-11 min-w-11 items-center transition-colors hover:text-foreground focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
-												href="https://www.threads.com/@mustavibe.dev"
-												rel="noreferrer"
-												target="_blank"
-											>
-												Threads
-											</a>
-											<a
-												className="inline-flex min-h-11 min-w-11 items-center transition-colors hover:text-foreground focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
-												href="https://x.com/mustavibe"
-												rel="noreferrer"
-												target="_blank"
-											>
-												X
-											</a>
-										</nav>
-										<div className="text-right">
-											<span>
-												{locale === "id" ? "Dibuat oleh " : "Made by "}
-											</span>
-											<a
-												className="inline-flex min-h-11 items-center font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:text-primary focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
-												href="https://github.com/yamustofa/"
-												rel="noreferrer"
-												target="_blank"
-											>
-												yamustofa
-											</a>
-											<a
-												className="ml-3 inline-flex min-h-11 items-center underline decoration-border underline-offset-4 transition-colors hover:text-foreground focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
-												href="/privacy"
-											>
-												{t.privacy}
-											</a>
-										</div>
-									</div>
-								</footer>
+								<SiteFooter locale={locale} privacyLabel={t.privacy} />
 							</div>
 						)}
 
