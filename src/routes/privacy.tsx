@@ -23,7 +23,7 @@ export const Route = createFileRoute("/privacy")({
 	component: PrivacyPage,
 });
 
-export function PrivacyPage() {
+function PrivacyPage() {
 	const [optedOut, setOptedOut] = useState(false);
 
 	useEffect(() => setOptedOut(isAnalyticsOptedOut()), []);
