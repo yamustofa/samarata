@@ -12,3 +12,6 @@ dist-ssr
 .vinxi
 __unconfig*
 todos.json
+
+# Private product strategy kept only in the local workspace
+/docs/MONETIZATION_TECHNICAL_PLAN.md

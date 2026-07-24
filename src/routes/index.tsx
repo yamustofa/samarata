@@ -59,6 +59,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { calculateSplit, type ParticipantInput } from "@/lib/calculation";
+import { createReceiptText } from "@/lib/receipt-text";
 import { cn } from "@/lib/utils";
 
 const seoTitle = "samarata — Bagi Diskon dengan Adil";
@@ -461,24 +462,21 @@ function Home() {
 			locale === "id"
 				? `${result.participants.length} orang · sama rata, sama rasa`
 				: `${result.participants.length} people · fair split`;
-		return [
-			orderName.trim() || "samarata",
+		return createReceiptText({
+			formatMoney: (amount) => formatter.format(amount),
+			labels: {
+				generated: t.generated,
+				original: t.original,
+				saved: t.saved,
+				totalPayment: t.totalPayment,
+				totalSaved: t.totalSaved,
+			},
+			participants: result.participants,
 			splitLabel,
-			"#0001",
-			"",
-			...result.participants.flatMap((person, index) => [
-				`${String(index + 1).padStart(2, "0")}  ${person.name}  ${formatter.format(person.final)}`,
-				`    ${t.original} : ${formatter.format(person.amount)}`,
-				`    ${t.saved} : ${formatter.format(person.amount - person.final)}`,
-			]),
-			"",
-			`${t.totalSaved}: ${formatter.format(netSavings)}`,
-			`${t.totalPayment}: ${formatter.format(result.total)}`,
-			"",
-			t.generated,
-		]
-			.join("\n")
-			.trim();
+			title: orderName,
+			total: result.total,
+			totalSaved: netSavings,
+		});
 	}
 
 	async function receiptBlob() {
