@@ -169,10 +169,10 @@ const copy = {
 			"Gambar belum berhasil disimpan. Coba lagi atau gunakan Salin teks.",
 		shareFailed:
 			"Struk belum berhasil dibagikan. Coba lagi atau gunakan Salin teks.",
-		tipTitle: "Terbantu sama samarata?",
+		tipTitle: "Samarata memudahkanmu menghitung patungan?",
 		tipDescription:
-			"Kalau hitungannya bikin patungan lebih gampang, traktir pembuatnya kopi susu, boleh ☕",
-		tipButton: "Traktir kopi susu",
+			"Dukunganmu membantu Samarata tetap gratis dan terus berkembang.",
+		tipButton: "Dukung Samarata",
 		surveyTitle: "Biasanya kamu pakai samarata buat apa?",
 		surveyDescription:
 			"Satu pilihan aja. Jawaban ini bantu menentukan fitur berikutnya, tanpa mengirim nama atau nominal.",
@@ -281,10 +281,9 @@ const copy = {
 			"The receipt could not be copied. Allow clipboard access and try again.",
 		downloadFailed: "The image could not be saved. Try again or use Copy text.",
 		shareFailed: "The receipt could not be shared. Try again or use Copy text.",
-		tipTitle: "Did samarata help?",
-		tipDescription:
-			"If it made splitting the bill easier, you can treat the maker to an iced coffee ☕",
-		tipButton: "Buy an iced coffee",
+		tipTitle: "Does Samarata make splitting the bill easier?",
+		tipDescription: "Your support helps keep Samarata free and growing.",
+		tipButton: "Support Samarata",
 		surveyTitle: "What do you usually use samarata for?",
 		surveyDescription:
 			"Pick one. This helps shape the next feature without sending names or amounts.",

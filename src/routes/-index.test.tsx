@@ -70,9 +70,7 @@ afterEach(() => {
 describe("calculator flow", () => {
 	it("completes setup, participant entry, and results without login", async () => {
 		await renderHome();
-		expect(
-			screen.queryByRole("link", { name: "Traktir kopi susu" }),
-		).toBeNull();
+		expect(screen.queryByRole("link", { name: "Dukung Samarata" })).toBeNull();
 		expect(
 			screen.getByRole("navigation", { name: "Media sosial dan privasi" })
 				.textContent,
@@ -114,7 +112,7 @@ describe("calculator flow", () => {
 		expect(screen.getAllByText("Budi").length).toBeGreaterThan(0);
 		expect(screen.getAllByText("Siti").length).toBeGreaterThan(0);
 		expect(screen.queryByText(/masuk|login/i)).toBeNull();
-		const tipLink = screen.getByRole("link", { name: "Traktir kopi susu" });
+		const tipLink = screen.getByRole("link", { name: "Dukung Samarata" });
 		expect(tipLink.getAttribute("href")).toBe("https://saweria.co/yamustofa");
 		expect(tipLink.getAttribute("target")).toBe("_blank");
 		expect(tipLink.getAttribute("rel")).toBe("noreferrer");
