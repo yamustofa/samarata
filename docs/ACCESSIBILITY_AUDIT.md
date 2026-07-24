@@ -29,7 +29,9 @@ A headless Chrome 150 audit at a 320×800 mobile viewport covered landing, setup
 
 The TanStack Devtools launcher appears in development accessibility output and screenshots but is removed from production builds.
 
-## Manual checks before a production release
+## Optional real-device QA
+
+Samarata is a web application, so the automated browser audit above is the Phase 0 accessibility gate. The following checks are optional release QA when representative devices are available; they do not block the roadmap:
 
 - At a 320px viewport and 200% zoom, finish a two-participant calculation without unintended document-level horizontal scrolling or obscured controls.
 - Navigate the full flow using only Tab, Shift+Tab, Enter, Space, and Escape.
