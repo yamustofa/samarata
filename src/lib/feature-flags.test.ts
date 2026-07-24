@@ -13,8 +13,9 @@ describe("feature flags", () => {
 		);
 	});
 
-	it("fails closed for every feature by default", () => {
-		for (const flag of featureFlagNames) {
+	it("enables only the launched tip CTA", () => {
+		expect(isFeatureEnabled("tipCta")).toBe(true);
+		for (const flag of featureFlagNames.filter((name) => name !== "tipCta")) {
 			expect(isFeatureEnabled(flag)).toBe(false);
 		}
 	});
