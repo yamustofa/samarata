@@ -50,6 +50,10 @@ describe("calculator flow", () => {
 			name: "Masukkan tagihannya",
 		});
 		await waitFor(() => expect(document.activeElement).toBe(setupHeading));
+		const firstAmountInput = screen.getAllByLabelText("Tagihan awal")[0];
+		expect(firstAmountInput.getAttribute("type")).toBe("text");
+		fireEvent.change(firstAmountInput, { target: { value: "10.000" } });
+		expect(firstAmountInput.getAttribute("value")).toBe("10000");
 
 		fireEvent.change(screen.getByLabelText("Total diskon"), {
 			target: { value: "30000" },

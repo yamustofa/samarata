@@ -63,6 +63,7 @@ import { Separator } from "@/components/ui/separator";
 import { copyText, isAbortError } from "@/lib/browser-actions";
 import { calculateSplit, type ParticipantInput } from "@/lib/calculation";
 import { isFeatureEnabled } from "@/lib/feature-flags";
+import { moneyInputValue, parseMoneyInput } from "@/lib/money-input";
 import { createReceiptText } from "@/lib/receipt-text";
 import { tipDestinationUrl } from "@/lib/tip-config";
 import { cn } from "@/lib/utils";
@@ -312,17 +313,6 @@ const copy = {
 		darkMode: "Use dark theme",
 	},
 } as const;
-
-function parseMoney(value: string, currency: Currency) {
-	const parsed = Number(value.replace(",", "."));
-	if (!Number.isFinite(parsed)) return 0;
-	return Math.round(parsed * (currency === "USD" ? 100 : 1));
-}
-
-function moneyInputValue(amount: number, currency: Currency) {
-	if (!amount) return "";
-	return currency === "USD" ? (amount / 100).toFixed(2) : String(amount);
-}
 
 function initials(name: string) {
 	return name.trim().slice(0, 2).toUpperCase() || "?";
@@ -1716,18 +1706,18 @@ function MoneyField({
 					{currency === "IDR" ? "Rp" : "$"}
 				</span>
 				<Input
+					autoComplete="off"
 					aria-describedby={error ? errorId : undefined}
 					aria-invalid={Boolean(error)}
 					className="pl-10 tabular-nums"
 					id={id}
 					inputMode="decimal"
-					min="0"
 					onChange={(event) =>
-						onChange(parseMoney(event.target.value, currency))
+						onChange(parseMoneyInput(event.target.value, currency))
 					}
+					pattern="[0-9.,-]*"
 					placeholder={currency === "IDR" ? "0" : "0.00"}
-					step={currency === "IDR" ? "1" : "0.01"}
-					type="number"
+					type="text"
 					value={moneyInputValue(amount, currency)}
 				/>
 			</div>
