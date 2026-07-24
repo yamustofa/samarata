@@ -6,11 +6,13 @@ export function TipCard({
 	buttonLabel,
 	description,
 	href,
+	onClick,
 	title,
 }: {
 	buttonLabel: string;
 	description: string;
 	href: string;
+	onClick?: () => void;
 	title: string;
 }) {
 	return (
@@ -32,6 +34,7 @@ export function TipCard({
 					"mt-4 min-h-11 w-full sm:mt-0 sm:w-auto",
 				)}
 				href={href}
+				onClick={onClick}
 				rel="noreferrer"
 				target="_blank"
 			>

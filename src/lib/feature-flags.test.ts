@@ -13,9 +13,12 @@ describe("feature flags", () => {
 		);
 	});
 
-	it("enables only the launched tip CTA", () => {
+	it("enables only the launched Phase 1 and Phase 2 features", () => {
 		expect(isFeatureEnabled("tipCta")).toBe(true);
-		for (const flag of featureFlagNames.filter((name) => name !== "tipCta")) {
+		expect(isFeatureEnabled("productSurvey")).toBe(true);
+		for (const flag of featureFlagNames.filter(
+			(name) => name !== "tipCta" && name !== "productSurvey",
+		)) {
 			expect(isFeatureEnabled(flag)).toBe(false);
 		}
 	});

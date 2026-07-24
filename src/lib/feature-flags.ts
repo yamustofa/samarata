@@ -13,7 +13,7 @@ export type FeatureFlags = Readonly<Record<FeatureFlagName, boolean>>;
 
 export const featureFlags = Object.freeze({
 	tipCta: true,
-	productSurvey: false,
+	productSurvey: true,
 	samarataPlus: false,
 	sponsoredOffer: false,
 	paymentLinks: false,

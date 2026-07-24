@@ -12,6 +12,7 @@ import { Home } from "./index";
 
 beforeEach(() => {
 	window.localStorage.clear();
+	window.sessionStorage.clear();
 	Object.defineProperty(window, "matchMedia", {
 		configurable: true,
 		value: vi.fn().mockImplementation(() => ({
@@ -108,5 +109,36 @@ describe("calculator flow", () => {
 				"Struk belum berhasil disalin",
 			),
 		);
+	});
+
+	it("dismisses the closed use-case survey for the current result", async () => {
+		render(<Home />);
+		fireEvent.click(screen.getByRole("button", { name: "Mulai hitung" }));
+		fireEvent.change(await screen.findByLabelText("Nama"), {
+			target: { value: "Budi" },
+		});
+		fireEvent.change(screen.getByLabelText("Tagihan awal"), {
+			target: { value: "19000" },
+		});
+		fireEvent.click(screen.getByRole("button", { name: "Hitung pembagian" }));
+
+		expect(
+			await screen.findByRole("heading", {
+				name: "Biasanya kamu pakai samarata buat apa?",
+			}),
+		).toBeTruthy();
+		fireEvent.click(screen.getByRole("button", { name: "Tutup survey" }));
+		expect(
+			screen.queryByRole("heading", {
+				name: "Biasanya kamu pakai samarata buat apa?",
+			}),
+		).toBeNull();
+
+		fireEvent.click(screen.getByRole("button", { name: "Gunakan tema gelap" }));
+		expect(
+			screen.queryByRole("heading", {
+				name: "Biasanya kamu pakai samarata buat apa?",
+			}),
+		).toBeNull();
 	});
 });
