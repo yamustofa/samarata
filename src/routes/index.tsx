@@ -1011,7 +1011,7 @@ export function Home() {
 											className="flex shrink-0 items-center gap-4"
 										>
 											<a
-												className="transition-colors hover:text-foreground focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+												className="inline-flex min-h-11 min-w-11 items-center transition-colors hover:text-foreground focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
 												href="https://www.threads.com/@mustavibe.dev"
 												rel="noreferrer"
 												target="_blank"
@@ -1019,7 +1019,7 @@ export function Home() {
 												Threads
 											</a>
 											<a
-												className="transition-colors hover:text-foreground focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+												className="inline-flex min-h-11 min-w-11 items-center transition-colors hover:text-foreground focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
 												href="https://x.com/mustavibe"
 												rel="noreferrer"
 												target="_blank"
@@ -1032,7 +1032,7 @@ export function Home() {
 												{locale === "id" ? "Dibuat oleh " : "Made by "}
 											</span>
 											<a
-												className="font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:text-primary focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+												className="inline-flex min-h-11 items-center font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:text-primary focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
 												href="https://github.com/yamustofa/"
 												rel="noreferrer"
 												target="_blank"
@@ -1142,6 +1142,7 @@ export function Home() {
 															<CardAction>
 																<Button
 																	aria-label={`${t.remove}: ${participant.name || index + 1}`}
+																	className="size-11"
 																	disabled={participants.length === 1}
 																	onClick={() =>
 																		setParticipants((current) =>
@@ -1225,11 +1226,16 @@ export function Home() {
 									</Alert>
 								)}
 								<div className="mt-8 flex items-center justify-between gap-3">
-									<Button onClick={() => setStep("landing")} variant="ghost">
+									<Button
+										className="min-h-11"
+										onClick={() => setStep("landing")}
+										variant="ghost"
+									>
 										<ArrowLeft data-icon="inline-start" />
 										{t.back}
 									</Button>
 									<Button
+										className="min-h-11"
 										disabled={discount < 0 || fee < 0}
 										onClick={validateParticipants}
 									>
@@ -1406,7 +1412,7 @@ export function Home() {
 											</Card>
 										</TiltReceipt>
 										<details className="group mt-4 border-y border-border py-4">
-											<summary className="flex cursor-pointer list-none items-center justify-between font-medium">
+											<summary className="flex min-h-11 cursor-pointer list-none items-center justify-between font-medium">
 												{t.explanation}
 												<ChevronDown className="transition-transform group-open:rotate-180" />
 											</summary>
@@ -1448,6 +1454,7 @@ export function Home() {
 								)}
 								<div className="mt-8 grid gap-3 sm:grid-cols-3">
 									<Button
+										className="min-h-11"
 										disabled={pendingAction !== null}
 										onClick={() =>
 											runReceiptAction("download", downloadReceipt)
@@ -1458,6 +1465,7 @@ export function Home() {
 										{t.download}
 									</Button>
 									<Button
+										className="min-h-11"
 										disabled={pendingAction !== null}
 										onClick={() => runReceiptAction("copy", copyReceipt)}
 										variant="outline"
@@ -1466,6 +1474,7 @@ export function Home() {
 										{t.copy}
 									</Button>
 									<Button
+										className="min-h-11"
 										disabled={pendingAction !== null}
 										onClick={() => runReceiptAction("share", shareReceipt)}
 									>
@@ -1474,11 +1483,15 @@ export function Home() {
 									</Button>
 								</div>
 								<div className="mt-6 flex flex-wrap justify-center gap-2">
-									<Button onClick={() => setStep("setup")} variant="ghost">
+									<Button
+										className="min-h-11"
+										onClick={() => setStep("setup")}
+										variant="ghost"
+									>
 										<ArrowLeft data-icon="inline-start" />
 										{t.edit}
 									</Button>
-									<Button onClick={reset} variant="ghost">
+									<Button className="min-h-11" onClick={reset} variant="ghost">
 										<RotateCcw data-icon="inline-start" />
 										{t.newOrder}
 									</Button>
