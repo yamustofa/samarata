@@ -8,11 +8,11 @@
 
 The fast, transparent way to calculate what everyone should pay after discounts, vouchers, cashback, delivery fees, and other shared costs.
 
-**[Try samarata live](https://samarata.yamustofa.workers.dev/)**
+**[Try samarata live](https://samarata.my.id/)**
 
 </div>
 
-[![samarata — Split discounts fairly](public/og-samarata.png)](https://samarata.yamustofa.workers.dev/)
+[![samarata — Split discounts fairly](public/og-samarata.png)](https://samarata.my.id/)
 
 ## The fair answer to “So… how much do I pay?”
 
@@ -114,6 +114,6 @@ For product direction and messaging, see [`docs/BRAND_REPOSITION.md`](docs/BRAND
 
 <div align="center">
 
-Built by [yamustofa](https://github.com/yamustofa/) · **[Open samarata](https://samarata.yamustofa.workers.dev/)**
+Built by [yamustofa](https://github.com/yamustofa/) · **[Open samarata](https://samarata.my.id/)**
 
 </div>
