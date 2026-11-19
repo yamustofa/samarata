@@ -8,11 +8,11 @@
 
 Cara gampang dan transparan buat menghitung berapa yang harus dibayar masing-masing setelah diskon, voucher, cashback, ongkir, dan biaya lainnya.
 
-**[Coba samarata](https://samarata.yamustofa.workers.dev/)**
+**[Coba samarata](https://samarata.my.id/)**
 
 </div>
 
-[![samarata — Bagi diskon dengan adil](public/og-samarata.png)](https://samarata.yamustofa.workers.dev/)
+[![samarata — Bagi diskon dengan adil](public/og-samarata.png)](https://samarata.my.id/)
 
 ## Biar ada jawaban kalo ditanya, “Jadi… aku bayar berapa?”
 
@@ -114,6 +114,6 @@ Kalau mau lihat arah produk dan pesan brand-nya, buka [`docs/BRAND_REPOSITION.md
 
 <div align="center">
 
-Dibikin oleh [yamustofa](https://github.com/yamustofa/) · **[Buka samarata](https://samarata.yamustofa.workers.dev/)**
+Dibikin oleh [yamustofa](https://github.com/yamustofa/) · **[Buka samarata](https://samarata.my.id/)**
 
 </div>
